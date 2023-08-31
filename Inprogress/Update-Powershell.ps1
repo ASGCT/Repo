@@ -45,7 +45,7 @@ Function Invoke-Process($executable, $arguments) {
     $psi = $process.StartInfo
     $psi.FileName = $executable
     $psi.Arguments = $arguments
-    Write-Log -message "starting new process '$executable $arguments'" -type LOG
+    Write-log -message "starting new process '$executable $arguments'" -type LOG
     $process.Start() | Out-Null
     
     $process.WaitForExit() | Out-Null
