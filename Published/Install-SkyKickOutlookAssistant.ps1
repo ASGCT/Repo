@@ -1,3 +1,37 @@
+<#
+  .SYNOPSIS
+  Installs Skykick's Outlook Assistant.
+
+  .DESCRIPTION
+  The Install-SkykickOutlookAssistant.ps1 script installs Skykick Outlook Assistant on a target machine.
+  
+  .PARAMETER organizationKey
+  Specifies the organization key assigned by skykick when you activate a migration job.
+
+  .INPUTS
+  None. You can't pipe objects to Install-SkykickOutlookAssistant.ps1.
+
+  .OUTPUTS
+  Returns a system.string to the console after completion.
+
+  .EXAMPLE
+  PS> .\Install-SkykickOutlookAssistant.ps1
+  Installs Skykick Outlook Assistant without a specified Organization key, an orginization Key will need to be configured
+  after the installation.
+
+  .EXAMPLE
+  PS> .\Install-SkykickOutlookAssistant.ps1 -organizationKey 94dfjksilouiogdsjfkg=
+  Installs Skykick Outlook Assistant setting the organization key to 94dfjksilouiogdsjfkg=
+
+  .NOTES
+  This script was developed by SkyKick and modified by 
+  Chris Calverley 
+  on
+  August 31, 2023
+  For
+  ASGCT
+#>
+
 param(
   [Parameter(Mandatory=$false)][String]$organizationKey = "DEFAULT"
 )
@@ -9,8 +43,6 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-
-
 
 function CheckForProductName ([String] $productName) {
     $prod_obj = $installer_db | Where-Object -Property "Name" -eq $productName
@@ -43,8 +75,6 @@ function GetOutlook2016Bitness {
 function HasOutlook2016 {
     return (GetOutlook2016Bitness -ne $null)
 }
-
-
 
 Set-Location C:\Temp
 $ErrorActionPreference = "Stop"
@@ -143,4 +173,3 @@ else {
     Write-Log 'OAUM Failed to install with error code $oaum_install_status' -Type 'ERROR'
     return "OAUM Failed to install with error code $oaum_install_status"
 }
-
