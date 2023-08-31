@@ -27,7 +27,7 @@ Param(
 
 Set-ExecutionPolicy Bypass -scope Process -Force
 $DownloadLocation = 'C:\Temp'
-$BaseRepoUrl = 'https://github.com/ASGCT/Repo/blob/main/Published/'
+$BaseRepoUrl = 'https://github.com/ASGCT/Repo/blob/main/Published/$FileName/'
 
 $FullUrl = "$BaseRepoUrl$FileName.ps1"
 
