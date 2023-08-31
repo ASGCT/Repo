@@ -1,8 +1,3 @@
-
-
-
-
-
 function Write-log {
     param(
         [Parameter(Mandatory=$false)][string]$Message,
@@ -33,4 +28,5 @@ function Write-log {
         Add-Content -Path "$scriptLog" -Value "$MyDate - $Type - $Message"
     }
 }
+Write-log -message 'New Run'
 $bootstraploaded = $true
