@@ -1,7 +1,7 @@
 
 
 
-$bootstraploaded = $true
+
 
 function Write-log {
     param(
@@ -33,3 +33,4 @@ function Write-log {
         Add-Content -Path "$scriptLog" -Value "$MyDate - $Type - $Message"
     }
 }
+$bootstraploaded = $true
