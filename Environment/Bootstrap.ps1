@@ -30,4 +30,4 @@
         }
     }
 
-    $bootstraploaded = $true
+    $Global:bootstraploaded = $true
