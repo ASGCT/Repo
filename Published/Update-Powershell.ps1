@@ -1,36 +1,29 @@
-<# 
-  PSScriptInfo
- .VERSION 1.0001 
- .GUID 
- .AUTHOR
-     Name <email> (author)
-     Name <email> (minor changes)
- .COPYRIGHT
-     Name Year
- .TAGS
-    
- .LICENSEURI 
- .PROJECTURI 
- .RELEASENOTES
-     Version 1.0001: <Date>
-         Notes
-     <Next Version>    <Date>
-         Notes
- .DESCRIPTION
-    Notes
- .PARAMETER <Name>
-     <[Type]> - Notes
- .EXAMPLE
-     Notes
+<#
+    .SYNOPSIS
+    Update PowerShell to version 5.1
+
+    .DESCRIPTION
+    The Update-Powershell.ps1 script will attempt to upgrade Windows PowerShell to version 5.1
+
+    .INPUTS
+    None. You can't pipe objects to Update-Powershell.
+
+    .OUTPUTS
+    System.String. Update-Powershell.ps1 returns a string upon completion.
+
+    .EXAMPLE
+    PS> .\Update-Powershell.ps1
+    Updates Windows PowerShell to V5.1 if necessary.
+
+    .NOTES
+    This script may require a reboot to complete, a reboot will not be automatically done.
 #>
 
 [CmdletBinding()]
-Param(
-    [string]$version = "5.1"
-)
+Param()
 $ErrorActionPreference = 'Stop'
-
-$tmp_dir = 'C:\Temp'
+$version = "5.1"
+$WorkingDirectory = 'C:\Temp'
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
@@ -64,20 +57,20 @@ Function Get-File($url, $path) {
 Function Get-Wmf5Server2008($architecture) {
     if ($architecture -eq "x64") {
         $zip_url = "http://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win7AndW2K8R2-KB3191566-x64.zip"
-        $file = "$tmp_dir\Win7AndW2K8R2-KB3191566-x64.msu"
+        $file = "$WorkingDirectory\Win7AndW2K8R2-KB3191566-x64.msu"
     } else {
         $zip_url = "http://download.microsoft.com/download/6/F/5/6F5FF66C-6775-42B0-86C4-47D41F2DA187/Win7-KB3191566-x86.zip"
-        $file = "$tmp_dir\Win7-KB3191566-x86.msu"
+        $file = "$WorkingDirectory\Win7-KB3191566-x86.msu"
     }
     if (Test-Path -Path $file) {
         return $file
     }
 
     $filename = $zip_url.Split("/")[-1]
-    $zip_file = "$tmp_dir\$filename"
+    $zip_file = "$WorkingDirectory\$filename"
     Get-File -url $zip_url -path $zip_file
 
-    Write-Log -message "extracting '$zip_file' to '$tmp_dir'" -Type LOG
+    Write-Log -message "extracting '$zip_file' to '$WorkingDirectory'" -Type LOG
     try {
         Add-Type -AssemblyName System.IO.Compression.FileSystem > $null
         $legacy = $false
@@ -88,122 +81,74 @@ Function Get-Wmf5Server2008($architecture) {
     if ($legacy) {
         $shell = New-Object -ComObject Shell.Application
         $zip_src = $shell.NameSpace($zip_file)
-        $zip_dest = $shell.NameSpace($tmp_dir)
+        $zip_dest = $shell.NameSpace($WorkingDirectory)
         $zip_dest.CopyHere($zip_src.Items(), 1044)
     } else {
-        [System.IO.Compression.ZipFile]::ExtractToDirectory($zip_file, $tmp_dir)
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zip_file, $WorkingDirectory)
     }
 
     return $file
 }
-Write-Log -message "starting script" -Type LOG
+Write-Log -message "Initiating Update-PowerShell" -Type LOG
 
-if ($PSVersionTable -eq $null) {
-    Write-Log -message "upgrading powershell v1.0 to v2.0" -Type Log
-    $architecture = $env:PROCESSOR_ARCHITECTURE
-    if ($architecture -eq "AMD64") {
-        $url = "https://download.microsoft.com/download/2/8/6/28686477-3242-4E96-9009-30B16BED89AF/Windows6.0-KB968930-x64.msu"
-    } else {
-        $url = "https://download.microsoft.com/download/F/9/E/F9EF6ACB-2BA8-4845-9C10-85FC4A69B207/Windows6.0-KB968930-x86.msu"
-    }
-    $filename = $url.Split("/")[-1]
-    $file = "$tmp_dir\$filename"
-    Get-File -url $url -path $file
-    $exit_code = Invoke-Process -executable $file -arguments "/quiet /norestart"
-    if ($exit_code -ne 0 -and $exit_code -ne 3010) {
-        $error_msg = "failed to update Powershell from 1.0 to 2.0: exit code $exit_code"
-        Write-Log -message $error_msg -Type "ERROR"
-        throw $error_msg
-    }
-    Write-log -Message 'A task has completed and a reboot is required, please reboot and re-run this script.' -Type Log
-    Return 'Please re-run this after a reboot.'
+if ($null -eq $PSVersionTable) {
+    Write-Log -message "powershell v1.0 unsupported" -Type ERROR
+    Return 'ERROR - PS V1.0 unsupported'
 }
 
 $current_ps_version = [version]"$($PSVersionTable.PSVersion.Major).$($PSVersionTable.PSVersion.Minor)"
 if ($current_ps_version -eq [version]$version) {
-    Write-Log -message "current and target PS version are the same ($($current_ps_version)), no action is required"
+    Write-Log -message "You are currently using PowerShell V5.1 No upgrade necessary" -Type Log
     return
 }
 
 if ($([int][string]$current_ps_version) -gt $([int]$version)) {
-    Write-Log -message "current version $($current_ps_version) is higher than target PS version $([version]$version), no action is required"
+    Write-Log -message "You are currently using PowerShell $($current_ps_version) this is already above the currently supported PowerShell Version" -Type Log
     return
 }
 
-$os_version = [Version](Get-Item -Path "$env:SystemRoot\System32\kernel32.dll").VersionInfo.ProductVersion
-$architecture = $env:PROCESSOR_ARCHITECTURE
-if ($architecture -eq "AMD64") {
+$os_version = [System.Environment]::OSVersion.Version
+if ([Environment]::Is64BitProcess) {
     $architecture = "x64"
 } else {
     $architecture = "x86"
 }
 
-$actions = @()
-switch ($version) {
-    "3.0" {
-        $actions += "3.0"
-        break
+
+$procedures = @()
+
+if ($os_version -lt [version]"6.1") {
+    $error_msg = "cannot upgrade Server 2008 to Powershell v5.1, v3 is the latest supported"
+    Write-Log -message $error_msg -Type "ERROR"
+    return $error_msg
     }
-    "4.0" {
-        if ($os_version -lt [version]"6.1") {
-            $error_msg = "cannot upgrade Server 2008 to Powershell v4, v3 is the latest supported"
-            Write-Log -message $error_msg -Type "ERROR"
-            return $error_msg
-        }
-        $actions += "4.0"
-        break
+# check if WMF 3 is installed, need to be uninstalled before 5.1
+if ($os_version.Minor -lt 2) {
+    $wmf3_installed = Get-Hotfix -Id "KB2506143" -ErrorAction SilentlyContinue
+    if ($wmf3_installed) {
+        $procedures += "remove-3.0"
     }
-    "5.1" {
-        if ($os_version -lt [version]"6.1") {
-            $error_msg = "cannot upgrade Server 2008 to Powershell v5.1, v3 is the latest supported"
-            Write-Log -message $error_msg -Type "ERROR"
-            return $error_msg
-        }
-        # check if WMF 3 is installed, need to be uninstalled before 5.1
-        if ($os_version.Minor -lt 2) {
-            $wmf3_installed = Get-Hotfix -Id "KB2506143" -ErrorAction SilentlyContinue
-            if ($wmf3_installed) {
-                $actions += "remove-3.0"
-            }
-        }
-        $actions += "5.1"
-        break
-    }
-    default {
-        $error_msg = "version '$version' is not supported in this upgrade script"
-        Write-Log -message $error_msg -Type "ERROR"
-        return $error_msg
-    }
+}
+$procedures += "5.1"
+
+# check for .NET 4.5.2 is not installed and add to the actions
+$dnetpath = 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full'
+$dotnetversion = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' -Name Release -ErrorAction SilentlyContinue
+
+if (!(Test-Path -Path $dnetpath) -or (!($dotnetversion)) -or ($dotnetversion.release -lt 379893)) {
+    #upgrade .net here
+    $procedures = @("dotnet") + $procedures
 }
 
-# detect if .NET 4.5.2 is not installed and add to the actions
-$dotnet_path = "HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
-if (-not (Test-Path -Path $dotnet_path)) {
-    $dotnet_upgrade_needed = $true
-} else {
-    $dotnet_version = Get-ItemProperty -Path $dotnet_path -Name Release -ErrorAction SilentlyContinue
-    if ($dotnet_version) {
-        # 379893 == 4.5.2
-        if ($dotnet_version.Release -lt 379893) {
-            $dotnet_upgrade_needed = $true
-        }        
-    } else {
-        $dotnet_upgrade_needed = $true
-    }
-}
-if ($dotnet_upgrade_needed) {
-    $actions = @("dotnet") + $actions
-}
-
-Write-Log -message "The following actions will be performed: $($actions -join ", ")" -Type LOG
-foreach ($action in $actions) {
+Write-Log -message "Running the following procedures: $($procedures -join ", ")" -Type LOG
+foreach ($procedure in $procedures) {
     $url = $null
     $file = $null
     $arguments = "/quiet /norestart"
 
-    switch ($action) {
+    switch ($procedure) {
         "dotnet" {
-            Write-Log -message "running .NET update to 4.5.2"
+            Write-Log -message "Updating .Net to 4.5.2"
             $url = "https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe"
             $error_msg = "failed to update .NET to 4.5.2"
             $arguments = "/q /norestart"
@@ -213,35 +158,15 @@ foreach ($action in $actions) {
             # this is only run before a 5.1 install on Windows 7/2008 R2, the
             # install zip needs to be downloaded and extracted before
             # removing 3.0 as then the FileSystem assembly cannot be loaded
-            Write-Log -message "downloading WMF/PS v5.1 and removing WMF/PS v3 before version 5.1 install" -Type LOG
+            Write-Log -message "downloading WMF/PS v5.1,removing WMF/PS v3, then installing PowerShell version 5.1" -Type LOG
             Get-Wmf5Server2008 -architecture $architecture > $null
 
             $file = "wusa.exe"
             $arguments = "/uninstall /KB:2506143 /quiet /norestart"
             break
         }
-        "3.0" {
-            Write-Log -message "running powershell update to version 3" -Type LOG
-            if ($os_version.Minor -eq 1) {
-                $url = "https://download.microsoft.com/download/E/7/6/E76850B8-DA6E-4FF5-8CCE-A24FC513FD16/Windows6.1-KB2506143-$($architecture).msu"
-            } else {
-                $url = "https://download.microsoft.com/download/E/7/6/E76850B8-DA6E-4FF5-8CCE-A24FC513FD16/Windows6.0-KB2506146-$($architecture).msu"
-            }
-            $error_msg = "failed to update Powershell to version 3"
-            break
-        }
-        "4.0" {
-            Write-Log -message "running powershell update to version 4" -Type LOG
-            if ($os_version.Minor -eq 1) {
-                $url = "https://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows6.1-KB2819745-$($architecture)-MultiPkg.msu"
-            } else {
-                $url = "https://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows8-RT-KB2799888-x64.msu"
-            }
-            $error_msg = "failed to update Powershell to version 4"
-            break
-        }
         "5.1" {
-            Write-Log -message "running powershell update to version 5.1" -Type LOG
+            Write-Log -message "Updating PowerShell to version 5.1" -Type LOG
             if ($os_version.Minor -eq 1) {
                 # Server 2008 R2 and Windows 7, already downloaded in remove-3.0
                 $file = Get-Wmf5Server2008 -architecture $architecture
@@ -259,14 +184,14 @@ foreach ($action in $actions) {
             break
         }
         default {
-            $error_msg = "unknown action '$action'"
+            $error_msg = "unknown Procedure '$procedure'"
             Write-Log -message $error_msg -Type "ERROR"
         }
     }
 
     if ($Null -eq $file) {
         $filename = $url.Split("/")[-1]
-        $file = "$tmp_dir\$filename"
+        $file = "$WorkingDirectory\$filename"
     }
     if ($Null -ne $url) {
         Get-File -url $url -path $file
