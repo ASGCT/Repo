@@ -1,5 +1,5 @@
 
-    function Write-log {
+    function Global:Write-log {
         param(
             [Parameter(Mandatory=$false)][string]$Message,
             [Parameter(Mandatory=$False)][ValidateSet('Log','ERROR','Data')][String]$Type = 'Log'
