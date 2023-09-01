@@ -27,7 +27,7 @@ Param(
 
 Set-ExecutionPolicy Bypass -scope Process -Force
 Set-Location C:\Temp
-$DownloadLocation = "C:\Temp\$FileName"
+$DownloadLocation = ".\$FileName"
 $BaseRepoUrl = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/$FileName/"
 
 $FullUrl = "$BaseRepoUrl$FileName.ps1"
@@ -37,6 +37,7 @@ If (!(Test-Path $DownloadLocation)) {
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "$DownloadLocation\$FileName.ps1"
+Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "C:\Temp\$FileName\$FileName.ps1"
 
-powershell -noexit "& ""$DownloadLocation\$FileName\$FileName.ps1 $arguments"""
+
+powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
