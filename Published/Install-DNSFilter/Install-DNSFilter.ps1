@@ -48,7 +48,7 @@ if (!([Environment]::Is64BitProcess)){
 }
 $FileName = "$BaseName.msi"
 $weburl = "https://download.dnsfilter.com/User_Agent/Windows/$FileName"
-$DownloadLocation = ".\Temp\$BaseName"
+$DownloadLocation = ".\$BaseName"
 If(!(Test-Path $DownloadLocation)) {
     New-Item -ItemType Directory -Name "$DownloadLocation" -Force
 }
