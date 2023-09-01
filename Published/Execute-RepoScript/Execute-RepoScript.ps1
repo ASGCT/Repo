@@ -34,4 +34,4 @@ $FullUrl = "$BaseRepoUrl$FileName.ps1"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "$DownloadLocation\$FileName.ps1"
 
-powershell -noexit "& ""$DownloadLocation\$FileName.ps1 $arguments"""
+powershell -noexit "& ""$DownloadLocation\$FileName\$FileName.ps1 $arguments"""
