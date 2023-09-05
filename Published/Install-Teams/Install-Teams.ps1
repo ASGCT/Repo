@@ -51,7 +51,7 @@ Write-Log -Message 'Downloading Teams MWI' -Type LOG
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$FileName"
 
-Start-Process (msiexec.exe /I "C:\Temp\$BaseName\$FileName" /qn /Norestart ALLUSERS=1) -Wait
+Start-Process -FilePath msiexec.exe /I "C:\Temp\$BaseName\$FileName" /qn /Norestart ALLUSERS=1 -Wait
 
 #Verify
 if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Program Files (x86)\Teams Installer"))) {
@@ -71,7 +71,5 @@ if (Test-Path $DownloadLocation) {
 $MyLogName = "$($MyInvocation.ScriptName)"
 $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
 Write-Log -Message "Cleaning up - Removing $LogName"
-
-Clear-Files
 
 Return $Status
