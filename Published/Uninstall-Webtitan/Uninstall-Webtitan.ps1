@@ -63,7 +63,7 @@ $UID = $uid.replace("MsiExec.exe /I","")
 $result = (& MsiExec.exe /X /qn $UID).ExitCode
 Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
 
-If (($result -ne 0) -or (!([string]::IsNullOrEmpty($result)))) {
+If (($result -ne 0) -or (!$result)) {
     Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
     Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
 } else {
