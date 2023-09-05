@@ -27,7 +27,7 @@ $WorkingDirectory = 'C:\Temp'
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
-    $BaseRepoUrl = (Invoke-webrequest -URI "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
+    $BaseRepoUrl = (Invoke-webrequest -URI -UseBasicParsing "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
     $scriptblock = [scriptblock]::Create($BaseRepoUrl)
     Invoke-Command -ScriptBlock $scriptblock
 
