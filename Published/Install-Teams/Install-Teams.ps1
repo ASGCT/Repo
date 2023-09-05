@@ -23,6 +23,7 @@ Param()
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $BaseRepoUrl = (Invoke-webrequest -UseBasicParsing -URI "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
     $scriptblock = [scriptblock]::Create($BaseRepoUrl)
     Invoke-Command -ScriptBlock $scriptblock
@@ -44,7 +45,7 @@ If(!(Test-Path $DownloadLocation)) {
     New-Item -ItemType Directory -Name "$DownloadLocation" -Force
 }
 Write-Log -Message 'Downloading Teams MWI' -Type LOG
-Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$FileName"
 
 $ExitCode = (& msiexec.exe /qn "C:\Temp\$BaseName\$FileName" /Norestart ALLUSERS=2).ExitCode
