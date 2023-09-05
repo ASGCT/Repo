@@ -35,7 +35,7 @@
         $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
 
         if ((Test-Path "C:\Temp\$LogName")) {
-            Remove-item -LiteralPath "C:\Temp\$LogName" -Force
+            Remove-item -LiteralPath "C:\Temp\$LogName" -Force -Recurse
         }
     }
 
