@@ -63,13 +63,5 @@ if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Progr
     $Status = 'Success'
 
 }
-#Clean-up
-Write-Log -Message "Cleaning up - Removing $DownloadLocation"
-if (Test-Path $DownloadLocation) {
-    Remove-Item $DownloadLocation -Force -Recurse
-}
-$MyLogName = "$($MyInvocation.ScriptName)"
-$LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
-Write-Log -Message "Cleaning up - Removing $LogName"
 
 Return $Status
