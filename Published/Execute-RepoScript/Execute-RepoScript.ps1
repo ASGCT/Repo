@@ -39,5 +39,9 @@ If (!(Test-Path $DownloadLocation)) {
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "C:\Temp\$FileName\$FileName.ps1"
 
+If([string]::IsNullOrEmpty($arguments)) {
+    powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 """
+} else {
+    powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
+}
 
-powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
