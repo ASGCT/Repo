@@ -40,8 +40,8 @@ If (!(Test-Path $DownloadLocation)) {
 Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "C:\Temp\$FileName\$FileName.ps1"
 
 If([string]::IsNullOrEmpty($arguments)) {
-    powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 """
+    powershell "& ""C:\Temp\$FileName\$FileName.ps1 """
 } else {
-    powershell -noexit "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
+    powershell "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
 }
 

@@ -60,7 +60,7 @@ Write-Log -message "WebTitan Uninstall string found to be: $UID "
 
 Write-Log -message 'Uninstalling Webtitan'
 $UID = $uid.replace("MsiExec.exe /I","")
-$result = (& MsiExec.exe /X $UID).ExitCode
+$result = (& MsiExec.exe /X /qn $UID).ExitCode
 Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
 
 If (($result -ne 0) -or (!([string]::IsNullOrEmpty($result)))) {
