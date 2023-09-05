@@ -51,7 +51,7 @@ Foreach ($CurrentDNSForwarder in $CurrentDNSForwarders) {
 }
 
 Write-Log -message 'Getting WebTitan uninstall string'
-$UID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.UrlInfoAbout -match "*WebTitan*" } | Select-Object -ExpandProperty UninstallString
+$UID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.UrlInfoAbout -like "*WebTitan*" } | Select-Object -ExpandProperty UninstallString
 If (!($UID)) {
     Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME.  Checking DNS Forwarders."
     Return 'Success - Webtitan is not installed.'
