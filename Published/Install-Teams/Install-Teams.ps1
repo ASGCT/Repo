@@ -63,6 +63,6 @@ if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Progr
 
 Clear-files
 If(Test-Path $DownloadLocation) {
-    Remove-Item -Name "$DownloadLocation" -Force
+    Remove-Item -Name "$DownloadLocation" -Force -recurse
 }
 Return $Status
