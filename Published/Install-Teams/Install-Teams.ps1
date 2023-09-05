@@ -27,9 +27,12 @@ If (!($bootstraploaded)){
     $BaseRepoUrl = (Invoke-webrequest -UseBasicParsing -URI "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
     $scriptblock = [scriptblock]::Create($BaseRepoUrl)
     Invoke-Command -ScriptBlock $scriptblock
-
+    Clear-Files
 }
-
+#N-Able does n
+if (Test-Path $DownloadLocation) {
+    Remove-Item $DownloadLocation -Force
+}
 #use the teams machine wide installer
 $BaseName = 'Teams_MWI'
 $FileName = "$BaseName.msi"
