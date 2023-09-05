@@ -31,9 +31,9 @@ If (!($bootstraploaded)){
 }
 
 #use the teams machine wide installer
-$BaseName = 'Teams_MWI'
-$DLFileName = "$BaseName.msi"
-$DownloadLocation = ".\$BaseName"
+$DLBaseName = 'Teams_MWI'
+$DLFileName = "$DLBaseName.msi"
+$DownloadLocation = ".\$DLBaseName"
 #N-Able does n
 
 if ([Environment]::Is64BitProcess) {
@@ -48,7 +48,7 @@ If(!(Test-Path $DownloadLocation)) {
 Write-Log -Message 'Downloading Teams MWI' -Type LOG
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$DLFileName"
-$pkg = "C:\Temp\$BaseName\$DLFileName"
+$pkg = "C:\Temp\$DLBaseName\$DLFileName"
 Start-Process "msiexec.exe /I $pkg /qn /Norestart ALLUSERS=1" -Wait
 
 #Verify
@@ -61,5 +61,5 @@ if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Progr
     $Status = 'Success'
 
 }
-Clear-Files
+
 Return $Status
