@@ -62,7 +62,7 @@ Write-Log -message 'Uninstalling Webtitan'
 $result = (& $UID).ExitCode
 Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
 
-If ($result -ne 0) {
+If (($result -ne 0) -or (!([string]::IsNullOrEmpty($result)))) {
     Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
     Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
 }
