@@ -53,8 +53,22 @@ Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$
 #Verify
 if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Program Files (x86)\Teams Installer"))) {
     Write-Log -message "Installation of Microsoft Teams failed with exit code: $ExitCode.  Cannot Continue" -Type ERROR
-    Return "Installation of Microsoft Teams failed with exit code: $ExitCode.  Cannot Continue"
+    $status = 'Failed'
+
 } else {
     Write-Log -message 'Microsoft Teams has successfully Installed'
-    return 'Microsoft Teams has successfully Installed'
+    $Status = 'Success'
+
 }
+#Clean-up
+Write-Log -Message "Cleaning up - Removing $DownloadLocation"
+if (Test-Path $DownloadLocation) {
+    Remove-Item $DownloadLocation -Force
+}
+$MyLogName = "$($MyInvocation.ScriptName)"
+$LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
+Write-Log -Message "Cleaning up - Removing $LogName"
+
+Clear-Files
+
+Return $Status
