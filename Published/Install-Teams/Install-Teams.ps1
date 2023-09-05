@@ -50,8 +50,8 @@ If(!(Test-Path $DownloadLocation)) {
 Write-Log -Message 'Downloading Teams MWI' -Type LOG
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$FileName"
-
-Start-Process -FilePath msiexec.exe /I "C:\Temp\$BaseName\$FileName" /qn /Norestart ALLUSERS=1 -Wait
+$pkg = "C:\Temp\$BaseName\$FileName"
+Start-Process "msiexec.exe /I $pkg /qn /Norestart ALLUSERS=1" -Wait
 
 #Verify
 if (!(Test-Path "C:\Program Files\Teams Installer") -and (!(Test-Path "C:\\Program Files (x86)\Teams Installer"))) {
