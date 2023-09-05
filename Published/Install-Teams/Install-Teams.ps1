@@ -72,6 +72,4 @@ $MyLogName = "$($MyInvocation.ScriptName)"
 $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
 Write-Log -Message "Cleaning up - Removing $LogName"
 
-Clear-Files
-
 Return $Status
