@@ -68,3 +68,4 @@ If ($result -ne 0) {
 }
 Write-Log -Message "Success - WebTitan has been removed from $env:COMPUTERNAME"
 Return "Success - WebTitan has been removed from $env:COMPUTERNAME"
+
