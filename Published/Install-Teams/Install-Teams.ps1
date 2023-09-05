@@ -49,7 +49,7 @@ Write-Log -Message 'Downloading Teams MWI' -Type LOG
 Invoke-WebRequest -UseBasicParsing -Uri $Installer -OutFile "$DownloadLocation\$FileName"
 
 $ExitCode = (& msiexec.exe /I "C:\Temp\$BaseName\$FileName" /qn /Norestart ALLUSERS=1).ExitCode
-If ($ExitCode -ne 0) {
+If (($ExitCode -ne 0) -and (!([string]::IsNullOrEmpty($ExitCode)))) {
     Write-Log -message "Installation of Microsoft Teams failed with exit code: $ExitCode.  Cannot Continue" -Type ERROR
     Return "Installation of Microsoft Teams failed with exit code: $ExitCode.  Cannot Continue"
 }
