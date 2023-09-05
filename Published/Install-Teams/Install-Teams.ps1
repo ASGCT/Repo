@@ -35,9 +35,7 @@ $BaseName = 'Teams_MWI'
 $FileName = "$BaseName.msi"
 $DownloadLocation = ".\$BaseName"
 #N-Able does n
-if (Test-Path $DownloadLocation) {
-    Remove-Item $DownloadLocation -Force -Recurse
-}
+
 if ([Environment]::Is64BitProcess) {
     $Installer = 'https://statics.teams.microsoft.com/production-windows-x64/1.1.00.14359/Teams_windows_x64.msi'
 } else {
