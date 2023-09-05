@@ -23,6 +23,7 @@ Param()
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
+    $progressPreference = 'silentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $BaseRepoUrl = (Invoke-webrequest -UseBasicParsing -URI "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
     $scriptblock = [scriptblock]::Create($BaseRepoUrl)
