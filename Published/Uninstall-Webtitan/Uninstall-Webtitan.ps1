@@ -37,6 +37,16 @@ If (!($bootstraploaded)){
 
 }
 
+Function get-Webtitan {
+    $GUID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.UrlInfoAbout -like "*WebTitan*" } | Select-Object -ExpandProperty UninstallString
+    if(!$GUID) {
+        Return $Null
+    } else {
+        return $GUID
+    }
+
+}
+
 $Webtitandnsforwarders = '52.32.39.15','35.165.149.215','3.22.161.186','3.22.161.182','52.209.170.167','52.209.115.90','13.211.58.17','13.210.212.196'
 $defaultdnsforwarders = '8.8.8.8','8.8.4.4'
 Write-Log -message 'Checking for Webtitan Dns Forwarders'
@@ -52,11 +62,13 @@ Foreach ($CurrentDNSForwarder in $CurrentDNSForwarders) {
 }
 
 Write-Log -message 'Getting WebTitan uninstall string'
-$UID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.UrlInfoAbout -like "*WebTitan*" } | Select-Object -ExpandProperty UninstallString
+$UID = get-Webtitan
+
 If (!($UID)) {
-    Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME.  Checking DNS Forwarders."
+    Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME."
     Return 'Success - Webtitan is not installed.'
 }
+
 Write-Log -message "WebTitan Uninstall string found to be: $UID "
 
 Write-Log -message 'Uninstalling Webtitan'
@@ -65,10 +77,11 @@ $UID = $uid.replace("MsiExec.exe /I","")
 $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
 Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
 
-If (($result -ne 0) -or (!$result)) {
-    Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
-    Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
-} else {
+$UID = get-Webtitan
+If (!($UID)) {
     Write-Log -Message "Success - WebTitan has been removed from $env:COMPUTERNAME"
     Return "Success - WebTitan has been removed from $env:COMPUTERNAME"
+} else {
+        Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
+    Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
 }
