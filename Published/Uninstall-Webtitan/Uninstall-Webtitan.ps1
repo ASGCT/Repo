@@ -85,3 +85,4 @@ If (!($UID)) {
         Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
     Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
 }
+Clear-Files
