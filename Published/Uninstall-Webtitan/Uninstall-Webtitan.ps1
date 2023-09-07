@@ -80,9 +80,11 @@ Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
 $UID = get-Webtitan
 If (!($UID)) {
     Write-Log -Message "Success - WebTitan has been removed from $env:COMPUTERNAME"
+    Clear-Files
     Return "Success - WebTitan has been removed from $env:COMPUTERNAME"
+
 } else {
-        Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
+    Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
+    Clear-Files
     Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
 }
-Clear-Files
