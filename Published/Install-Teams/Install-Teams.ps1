@@ -43,7 +43,7 @@ if ([Environment]::Is64BitProcess) {
 }
 
 If(!(Test-Path $DownloadLocation)) {
-    New-Item -ItemType Directory -Name "$DownloadLocation" -Force
+    New-Item -ItemType Directory -Name "$DownloadLocation" -Force | Out-Null
 }
 Write-Log -Message 'Downloading Teams MWI' -Type LOG
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
