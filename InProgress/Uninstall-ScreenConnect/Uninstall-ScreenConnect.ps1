@@ -5,8 +5,8 @@
   .DESCRIPTION
   The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER InstanceID
+  Specifies the Instance ID which can be found in the programs list between the ()'s.
 
   .INPUTS
   InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
