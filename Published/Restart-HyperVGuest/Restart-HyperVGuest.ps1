@@ -3,6 +3,7 @@
   Utilizes the Powershell Hyper-V module to restart one, more than one, or all running vms.
 
   .DESCRIPTION
+  This script should be targeting a Hyper-V Host
   The Restart-HyperVGuest.ps1 script will take a parameter named VMNAME which can be one or more VMNames in comma seperated form
   The script will then verify all running instances of vm either by given names or by all available running vms if vmname is not passed.
   The script will reboot all applicable vms 
