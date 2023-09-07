@@ -10,10 +10,10 @@
         $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
         $scriptLog = "$LogName.log"
         if (!(Test-Path 'C:\Temp')) {
-            New-Item -ItemType Directory -Name .\Temp
+            New-Item -ItemType Directory -Name .\Temp | Out-Null
         }
         if (!(Test-Path "C:\Temp\$scriptLog")) {
-            New-Item -ItemType File -Name $scriptLog
+            New-Item -ItemType File -Name $scriptLog | Out-Null
             $MyDate = Get-Date -Format s
             Add-Content -Path "$scriptLog" -Value "----------------------------------------------"
             Add-Content -Path "$scriptLog" -Value "$MyDate - $Type - $MyLogName "
