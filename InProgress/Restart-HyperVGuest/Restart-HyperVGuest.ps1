@@ -104,8 +104,10 @@ foreach ($runningvm in $RunningVMs){
   }
 
 If ($errorpresent) {
+  Clear-Files
   return 'One or more restart failures have been found, please evaluate the log file at C:\Temp\Restart-HyperVGuest.log'
 }
+Clear-Files
 return 'Success - All VMs have been successfully rebooted.'
 
 
