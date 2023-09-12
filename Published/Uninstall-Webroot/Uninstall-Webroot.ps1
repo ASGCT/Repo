@@ -33,7 +33,9 @@
 #>
 
 [CmdletBinding()]
-Param()
+Param(
+  [Parameter(Mandatory=$false)][switch]$rebooted = $false
+)
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
@@ -52,6 +54,9 @@ function Get-Webroot {
     return $true
   }
 }
+
+#I need to reboot to safe mode after scheduling a task to run after reboot in safe mode.
+
 
 #If webroot is not installed.
 If (!(Get-Webroot)) {
