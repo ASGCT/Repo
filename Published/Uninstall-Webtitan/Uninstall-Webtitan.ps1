@@ -66,6 +66,7 @@ $UID = get-Webtitan
 
 If (!($UID)) {
     Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME."
+    Clear-Files
     Return 'Success - Webtitan is not installed.'
 }
 
