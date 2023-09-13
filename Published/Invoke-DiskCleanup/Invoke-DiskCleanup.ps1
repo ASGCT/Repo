@@ -107,7 +107,7 @@ if (Test-Path "C:\Users\*\AppData\Local\Microsoft\Windows\IECompatUaCache\") {
 }
 
 Write-Log -Message 'Removing potentially large files from downloads folders' -Type Log
-$fileextensions = @('.exe','.iso','.gz') -join "|"
+$fileextensions = @('.exe','.iso','.gz','.msi') -join "|"
 $usertemp = 'C' + ":\Users\*\Downloads"
 $PLFiles = (Get-ChildItem $usertemp -Force -Recurse -ErrorAction SilentlyContinue)
 foreach ($file in $PLFiles) {
