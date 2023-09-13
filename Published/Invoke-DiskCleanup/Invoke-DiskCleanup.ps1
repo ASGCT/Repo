@@ -76,7 +76,7 @@ Write-Log -Message 'Clearing IIS logs' -Type Log
 Get-ChildItem "C:\inetpub\logs\LogFiles\*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Log -Message 'Removing WER Files' -Type Log
-Get-ChildItem -Path C:\ProgramData\Microsoft\Windows\WER -Recurse | Remove-Item -force -recurse -Verbose -ErrorAction SilentlyContinue
+Get-ChildItem -Path C:\ProgramData\Microsoft\Windows\WER -Recurse | Remove-Item -force -recurse -ErrorAction SilentlyContinue
 
 Write-Log -Message 'Emptying Recycling bins' -Type Log
 $Path = 'C' + ':\$Recycle.Bin'
