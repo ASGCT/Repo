@@ -117,7 +117,7 @@ foreach ($file in $PLFiles) {
 }
 
 Write-Log -Message 'Running disk cleanup utility' -Type Log
-cleanmgr /verylowdisk | out-Null
+Start-Process -FilePath Cleanmgr -ArgumentList '/sagerun:1' -Wait
 
 Write-Log -Message '-------------------------------------------' -Type Log
 $PostDrive = (Get-PSDrive) | Where-Object {$_.Name -eq 'C'}
