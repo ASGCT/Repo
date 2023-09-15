@@ -47,9 +47,7 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-if ([threading.thread]::CurrentThread.GetApartmentState() -eq "STA") {
-  & $env:SystemRoot\system32\WindowsPowerShell\v1.0\powershell.exe -Mta $MyInvocation.ScriptName
-}
+
 #ensure that psgallery is trusted.
 
 $Env:PATH += "; C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.20.2201.0_x64__8wekyb3d8bbwe"
