@@ -49,59 +49,10 @@ If (!($bootstraploaded)){
 }
 
 #ensure that psgallery is trusted.
-
-$Env:PATH += "; C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.20.2201.0_x64__8wekyb3d8bbwe"
-#check for modules
-try {Get-WinGetVersion} 
-Catch {Write-log -message 'Winget is not installed, installation may take time' -type Log 
-  Try {
-    Import-module microsoft.winget.client
-    Get-WingetVersion
-  } 
-  catch {
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Set-PSRepository -Name psgallery -InstallationPolicy Trusted
 Install-Module -Name NuGet -Force  
 Install-Module -Name Microsoft.WinGet.Client -Force
-  #WebClient
-$dc = New-Object net.webclient
-$dc.UseDefaultCredentials = $true
-$dc.Headers.Add("user-agent", "Inter Explorer")
-$dc.Headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f")
-
-#temp folder
-$InstallerFolder = $(Join-Path $env:ProgramData CustomScripts)
-if (!(Test-Path $InstallerFolder))
-{
-New-Item -Path $InstallerFolder -ItemType Directory -Force -Confirm:$false
-}
-	#Check Winget Install
-	Write-Log -message "Checking if Winget is installed" 
-	$TestWinget = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -eq "Microsoft.DesktopAppInstaller"}
-	If ([Version]$TestWinGet. Version -gt "2022.506.16.0") 
-	{
-		Write-Log -message "WinGet is Installed"
-	}Else 
-		{
-		#Download WinGet MSIXBundle
-		Write-Log -message "Not installed. Downloading WinGet..." 
-		$WinGetURL = "https://aka.ms/getwinget"
-		$dc.DownloadFile($WinGetURL, "$InstallerFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle")
-		
-		#Install WinGet MSIXBundle 
-		Try 	{
-			Write-Log -message "Installing MSIXBundle for App Installer..." 
-			Add-AppxProvisionedPackage -Online -PackagePath "$InstallerFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -SkipLicense 
-			Write-Log -Message "Installed MSIXBundle for App Installer"
-			}
-		Catch {
-			Write-Log -message "Failed to install MSIXBundle for App Installer..." -Type ERROR
-			} 
-		}
-  }
-
-  #winget upgrade --all --silent --accept-package-agreements --accept-source-agreements --force
-}
 Import-module microsoft.winget.client
 Get-WinGetVersion
 Switch ($Action) {
