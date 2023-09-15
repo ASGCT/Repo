@@ -52,7 +52,7 @@ If (!($bootstraploaded)){
 
 $Env:PATH += "; C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.20.2201.0_x64__8wekyb3d8bbwe"
 #check for modules
-try {winget} 
+try {Get-WinGetVersion} 
 Catch {Write-log -message 'Winget is not installed, installation may take time' -type Log 
 
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
