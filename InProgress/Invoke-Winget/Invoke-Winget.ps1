@@ -54,8 +54,12 @@ $Env:PATH += "; C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_1.20.
 #check for modules
 try {Get-WinGetVersion} 
 Catch {Write-log -message 'Winget is not installed, installation may take time' -type Log 
-
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+  Try {
+    Import-module microsoft.winget.client
+    Get-WingetVersion
+  } 
+  catch {
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Set-PSRepository -Name psgallery -InstallationPolicy Trusted
 Install-Module -Name NuGet -Force  
 Install-Module -Name Microsoft.WinGet.Client -Force
@@ -94,6 +98,8 @@ New-Item -Path $InstallerFolder -ItemType Directory -Force -Confirm:$false
 			Write-Log -message "Failed to install MSIXBundle for App Installer..." -Type ERROR
 			} 
 		}
+  }
+
   #winget upgrade --all --silent --accept-package-agreements --accept-source-agreements --force
 }
 Import-module microsoft.winget.client
