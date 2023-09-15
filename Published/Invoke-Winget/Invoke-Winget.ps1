@@ -51,10 +51,10 @@ If (!($bootstraploaded)){
 #ensure that psgallery is trusted.
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Set-PSRepository -Name psgallery -InstallationPolicy Trusted
-Install-Module -Name NuGet -Force  
-Install-Module -Name Microsoft.WinGet.Client -Force
-Import-module microsoft.winget.client
-Get-WinGetVersion
+Install-Module -Name NuGet -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+Install-Module -Name Microsoft.WinGet.Client -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue 
+Import-module microsoft.winget.client -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+Get-WinGetSource
 Switch ($Action) {
   'Install' {
       $arugment = 'Install '
