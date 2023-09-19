@@ -54,7 +54,7 @@ Set-PSRepository -Name psgallery -InstallationPolicy Trusted
 Install-Module -Name NuGet -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
 Install-Module -Name Microsoft.WinGet.Client -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue 
 Import-module microsoft.winget.client -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
-Get-WinGetSource
+winget list --accept-source-agreements
 Switch ($Action) {
   'Install' {
       $arugment = 'Install '
