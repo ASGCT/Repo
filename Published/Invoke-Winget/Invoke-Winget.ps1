@@ -97,7 +97,7 @@ New-Item -Path $InstallerFolder -ItemType Directory -Force -Confirm:$false
     $ACL = Get-ACL 'C:\Program Files\WindowsApps\'
     $Group = New-Object System.Security.Principal.NTAccount("Builtin", "Administrators")
     $ACL.SetOwner($Group)
-    Set-Acl -Path .\smithb\profile.v2 -AclObject $ACL
+    Set-Acl -Path 'C:\Program Files\WindowsApps\' -AclObject $ACL
     $Winget = Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -File | Where-Object name -like AppInstallerCLI.exe | Select-Object -ExpandProperty fullname
     
     $result = & $winget list --accept-package-agreements --accept-source-agreements
