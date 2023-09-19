@@ -172,7 +172,7 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 	}
 	Catch
 	{
-		Write-Log $error
+		Write-Log -message $error
 		exit 1
 	}
 	
@@ -184,7 +184,7 @@ function WingetTempDownload # Download WinGet from blob storage if unable to ins
 	}
 	Catch
 	{
-		Write-Log $Error
+		Write-Log -message $Error
 		exit 1
 	}
 		
@@ -245,44 +245,44 @@ $Winget = Get-ChildItem "$env:ProgramFiles\WindowsApps" -Recurse -File | Where-O
 if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 # If Visual C++ Redist. not installed, install it
 if (!$VisualC){ 
-Write-Log -message "Visual C++ X64 not found. Attempting to install" 
+Write-Log -message -message "Visual C++ X64 not found. Attempting to install" 
 try {
 	Install-VisualC
 }
 Catch [System.InvalidOperationException]{
-Write-Log -message "Error installing visual c++ redistributable. Attempting install once more"
+Write-Log -message -message "Error installing visual c++ redistributable. Attempting install once more"
 Start-Sleep -Seconds 5
 Install-VisualC
 }
 Catch {
-Write-Log -message "Failed to install visual c++ redistributable!"
-Write-Log -message $_
+Write-Log -message -message "Failed to install visual c++ redistributable!"
+Write-Log -message -message $_
 exit 1
 }
 $VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
-if (!$VisualC){Write-Log -message "Visual C++ Redistributable not found!" ; exit 1}
-else {Write-Log -message "Successfully installed Microsoft Visual C++ 2015-2022 Redistributable (x64)"}
+if (!$VisualC){Write-Log -message -message "Visual C++ Redistributable not found!" ; exit 1}
+else {Write-Log -message -message "Successfully installed Microsoft Visual C++ 2015-2022 Redistributable (x64)"}
 }
 # If Winget is not found, attempt to install it, or download copy from baselob storage
 if (!$Winget)
 { 
 	if ($loggedOnUser)
 	{
-		Write-Log -message "Attempting to install Winget as System under $($loggedOnUser)"
+		Write-Log -message -message "Attempting to install Winget as System under $($loggedOnUser)"
 		InstallWingetAsSystem
 		# If more than one version of Winget, select the latest
 		if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 		# If WinGet is not found, download copy from Blob storage
-		if (!$Winget){Write-Log -message "Downloading winget from blob storage" ;  WingetTempDownload }
+		if (!$Winget){Write-Log -message -message "Downloading winget from blob storage" ;  WingetTempDownload }
 		try
 		{
-			Write-Log -message "Winget varibale $($winget)"
+			Write-Log -message -message "Winget varibale $($winget)"
             $Install = WingetRun -RunType install -PackageID $PackageID
-			Write-Log $Install
+			Write-Log -message $Install
 		}
 		Catch
 		{
-			Write-Log $error[0]
+			Write-Log -message $error[0]
 			exit 1
 		}
 		
@@ -292,23 +292,23 @@ if (!$Winget)
 		try
 		{
 			
-			Write-Log "Winget not found, attempting to download now to $($env:TEMP)"
+			Write-Log -message "Winget not found, attempting to download now to $($env:TEMP)"
 			WingetTempDownload
 			try
 			{
 				$Install = WingetRun -RunType install -PackageID $PackageID
-				Write-Log $Install
+				Write-Log -message $Install
 			}
 			Catch
 			{
-				Write-Log $error
+				Write-Log -message $error
 				exit 1
 			}
 			
 		}
 		Catch
 		{
-			Write-Log "Unable to initialize Winget. Exiting"
+			Write-Log -message "Unable to initialize Winget. Exiting"
 			Write-Output $Error
 			exit 1
 		}
@@ -318,8 +318,9 @@ if (!$Winget)
 }
 else
 {
-	Write-Log "Winget found at $($Winget)"
+	Write-Log -message "Winget found at $($Winget)"
 	$Install = WingetRun -RunType install -PackageID $PackageID
-	Write-Log $Install | Out-String
+	Write-Log -message $Install | Out-String
 }
+Clear-Files
 #endregion
