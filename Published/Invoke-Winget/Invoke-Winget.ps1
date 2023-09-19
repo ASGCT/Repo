@@ -278,8 +278,7 @@ if (!$Winget)
 		{
 			Write-Log -message -message "Winget varibale $($winget)"
             $Install = WingetRun -RunType install -PackageID $PackageID
-			Write-Log -message $Install | Out-String
-		}
+			Write-Log -message "$($Install | Out-String)"
 		Catch
 		{
 			Write-Log -message $error[0]
@@ -297,7 +296,7 @@ if (!$Winget)
 			try
 			{
 				$Install = WingetRun -RunType install -PackageID $PackageID
-				Write-Log -message $Install | Out-String
+				Write-Log -message "$($Install | Out-String)"
 			}
 			Catch
 			{
@@ -309,7 +308,7 @@ if (!$Winget)
 		Catch
 		{
 			Write-Log -message "Unable to initialize Winget. Exiting"
-			Write-Output $Error
+			Write-Log -type ERROR -message $Error
 			exit 1
 		}
 	}
@@ -320,7 +319,7 @@ else
 {
 	Write-Log -message "Winget found at $($Winget)"
 	$Install = WingetRun -RunType install -PackageID $PackageID
-	Write-Log -message $Install | Out-String
+	Write-Log -message "$($Install | Out-String)"
 }
 Clear-Files
 #endregion
