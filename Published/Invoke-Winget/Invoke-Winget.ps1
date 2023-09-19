@@ -94,3 +94,5 @@ New-Item -Path $InstallerFolder -ItemType Directory -Force -Confirm:$false
 		#Remove WinGet MSIXBundle 
 		#Remove-Item -Path "$InstallerFolder\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle" -Force -ErrorAction Continue
 		}
+    $Winget = Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -File | Where-Object name -like AppInstallerCLI.exe | Select-Object -ExpandProperty fullname
+    & $winget list --accept-package-agreements --accept-source-agreements
