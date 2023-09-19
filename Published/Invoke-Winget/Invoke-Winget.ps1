@@ -54,7 +54,8 @@ Set-PSRepository -Name psgallery -InstallationPolicy Trusted
 Install-Module -Name NuGet -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
 Install-Module -Name Microsoft.WinGet.Client -Force -WarningAction SilentlyContinue -ErrorAction SilentlyContinue 
 Import-module microsoft.winget.client -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
-winget list --accept-source-agreements
+#winget list --accept-source-agreements
+Start-Process powershell -verb RunAs -argumentlist "winget list --accept-source-agreements"
 Switch ($Action) {
   'Install' {
       $arugment = 'Install '
