@@ -256,7 +256,7 @@ Install-VisualC
 }
 Catch {
 Write-Log -message -message "Failed to install visual c++ redistributable!"
-Write-Log -message -message $_
+Write-Log -message -message "$_"
 exit 1
 }
 $VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
@@ -279,6 +279,8 @@ if (!$Winget)
 			Write-Log -message -message "Winget varibale $($winget)"
             $Install = WingetRun -RunType install -PackageID $PackageID
 			Write-Log -message "$($Install | Out-String)"
+    
+    }
 		Catch
 		{
 			Write-Log -message $error[0]
