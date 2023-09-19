@@ -278,7 +278,7 @@ if (!$Winget)
 		{
 			Write-Log -message -message "Winget varibale $($winget)"
             $Install = WingetRun -RunType install -PackageID $PackageID
-			Write-Log -message $Install
+			Write-Log -message $Install | Out-String
 		}
 		Catch
 		{
@@ -297,7 +297,7 @@ if (!$Winget)
 			try
 			{
 				$Install = WingetRun -RunType install -PackageID $PackageID
-				Write-Log -message $Install
+				Write-Log -message $Install | Out-String
 			}
 			Catch
 			{
