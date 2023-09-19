@@ -100,5 +100,5 @@ New-Item -Path $InstallerFolder -ItemType Directory -Force -Confirm:$false
     Set-Acl -Path 'C:\Program Files\WindowsApps\' -AclObject $ACL
     $Winget = Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -File | Where-Object name -like AppInstaller.exe | Select-Object -ExpandProperty fullname
     
-    $result = & "$winget list --accept-package-agreements --accept-source-agreements"
+    $result = Start-Process -FilePath $winget -ArgumentList "list --accept-package-agreements --accept-source-agreements"
     return $result
