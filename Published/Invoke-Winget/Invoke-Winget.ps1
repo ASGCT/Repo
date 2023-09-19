@@ -15,8 +15,7 @@ powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageI
 #>
 param (
 	$PackageID,
-	$AdditionalInstallArgs,
-	$Log
+	$AdditionalInstallArgs
 )
 
 If (!($bootstraploaded)){
@@ -321,6 +320,6 @@ else
 {
 	Write-Log "Winget found at $($Winget)"
 	$Install = WingetRun -RunType install -PackageID $PackageID
-	Write-Log $Install
+	Write-Log $Install | Out-String
 }
 #endregion
