@@ -14,8 +14,8 @@ powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageI
 powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Python.Python.3.11" -Log "Python3Install.log" -AdditionalInstallArgs "--architecture x64"
 #>
 param (
-	$PackageID,
-	$AdditionalInstallArgs
+	[parameter(Mandatory=$true)][string]$PackageID,
+	[Parameter(Mandatory=$false)][string]$AdditionalInstallArgs
 )
 
 If (!($bootstraploaded)){

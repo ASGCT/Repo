@@ -1,28 +1,28 @@
-# Execute-RepoScript
+# Invoke-Winget
 
-Downloads and executes a repo script.
+Installs a winget package
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Invoke-Winget.ps1 [-PackageID] <String> [-AdditionalInstallArgs] <String> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Installs a winget package on a target from the system account.
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Invoke-Winget.ps1 -PackageID LIGHTNINGUK.ImgBurn
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+Installs Imgburn on a target machine not silently.
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+Invoke-Winget.ps1 -PackageID LIGHTNINGUK.ImgBurn -AdditionalInstallArgs  --silent
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Installs ImgBurn silently on a target machine.
