@@ -7,11 +7,11 @@ Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID
 .PARAMETER AdditionalInstallArgs
 Specify Additional Installation Arguments to pass to WinGet https://learn.microsoft.com/en-us/windows/package-manager/winget/install
     .EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Google.Chrome" -Log "ChromeWingetInstall.log"
+powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Google.Chrome"
 	.EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++" -Log "NotepadPlusPlus.log"
+powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++"
 	.EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Python.Python.3.11" -Log "Python3Install.log" -AdditionalInstallArgs "--architecture x64"
+powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Python.Python.3.11" -AdditionalInstallArgs "--architecture x64"
 #>
 param (
 	[parameter(Mandatory=$true)][string]$PackageID,
