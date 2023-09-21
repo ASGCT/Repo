@@ -11,7 +11,7 @@ powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageI
 	.EXAMPLE
 powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++"
 	.EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Python.Python.3.11" -AdditionalInstallArgs "--architecture x64"
+DNSF
 #>
 param (
 	[parameter(Mandatory=$true)][string]$PackageID,
