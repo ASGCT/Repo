@@ -150,8 +150,10 @@ Get-GPO -Guid $GPOID
 Start-Sleep -Seconds 5
 
 #add startup script
-$powershell = "\\creditunion\netlogon\DeployDNSFilter.ps1"
-$GpRoot = "C:\Windows\SYSVOL\sysvol\creditunion.local\Policies\{$GPOID}"
+$root = $(get-addomain).forest
+$DC = $(get-addomaincontroller).Name
+$powershell = "\\$DC\netlogon\DeployDNSFilter.ps1"
+$GpRoot = "C:\Windows\SYSVOL\sysvol\$root\Policies\{$GPOID}"
 $machineScriptsPath = "$GPRoot\Machine\Scripts"
 if (!(Test-Path "$machineScriptsPath\psscripts.ini")) {
   New-Item "$machineScriptsPath\psscripts.ini" -ItemType File -Force
