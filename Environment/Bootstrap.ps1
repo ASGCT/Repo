@@ -20,10 +20,7 @@
             Add-Content -Path "$scriptLog" -Value "$MyDate - $Type - $Message"
         } else {
             $MyDate = Get-Date -Format s
-            $Lastrun = (Get-Content $scriptLog -Tail 1).Split(' ')
-            if ([string]::IsNullOrEmpty($Lastrun)){
-                (Get-Content $scriptLog) | Select-Object -Index 2
-            }
+            $Lastrun = ((Get-Content $scriptLog) | Select-Object -Index 2).Split(' ')
             $lastruncomparor = ([datetime]$lastrun[0]).AddMinutes(30)
             If ($MyDate -lt $lastruncomparor) {
                 Add-Content -Path  "$scriptLog" -Value "----------------------------------------------"
