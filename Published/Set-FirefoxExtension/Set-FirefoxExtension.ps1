@@ -46,7 +46,7 @@ If (!($bootstraploaded)){
 
 }
 
-$extensionPath = 'C:\Temp\Firefox-Extensions'
+$extensionPath = '.\Firefox-Extensions'
 
 If (!(Test-path $extensionPath)){
   New-Item -Name $extensionPath -ItemType Directory -force | Out-Null
