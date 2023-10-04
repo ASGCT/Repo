@@ -83,6 +83,8 @@ $extensionsList = New-Object System.Collections.ArrayList
     }else{
         $newExtensionId = $extensionsList[-1].name + 1
         New-ItemProperty HKLM:\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist -PropertyType String -Name $newExtensionId -Value $extensionId
+        Write-Log -message 'Installed'
         $result = "Installed"
     }
+Clear-Files
 $result
