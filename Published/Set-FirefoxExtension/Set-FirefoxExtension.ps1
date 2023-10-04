@@ -53,7 +53,7 @@ If (!(Test-path $extensionPath)){
 }
 
 Foreach ($url in $ExtensionUrl) {
-  $Uri -match '(?<=/)(?<ExtensionName>[^/]+)(?=\?)'
+  $Url -match '(?<=/)(?<ExtensionName>[^/]+)(?=\?)'
   $Extension = $matches['ExtensionName']
 
   Invoke-WebRequest -Uri $url -OutFile "$extensionPath\$Extension"
