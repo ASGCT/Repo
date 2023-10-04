@@ -1,14 +1,29 @@
 <#
   .SYNOPSIS
-  Ultimately will add extension to chromium based browsers, currently supports chrome
+  will add extension to chromium based browsers, optionally including Edge browser
 
   .DESCRIPTION
-  Add a google chrome extension to the browser
+  adds an extension to a chromium based browser edge included.
   
+  .PARAMETER Browser
+  This allows you to specify a specific individual browser.
+  Non-specification of browser results in All response, meaning Chrome and Brave will be selected.
+
+  .PARAMETER IncludeEdge
+  This is a switch parameter that handles the Edge browswer. 
+  Since edge's store is different with different identifiers we would need to provide the unique edge store identifier
+  If you are using this parameter you will need to next set the EdgeExtensionID parameter
+
+  .PARAMETER EdgeExtensionID
+  The extension ID gathered from edge's store.
+
   .PARAMETER ExtensionID
-  The extension ID gathered from the google store.
+  The extension ID gathered from google's store.
 
   .INPUTS
+  Browser (Chrome, Brave, All) *All is default
+  IncludeEdge [switch] Toggle if you wish to add the extension to Edge
+  EdgeExtensionID (can be found in Edge's extension store)
   ExtensionID (Which can be found in the google store)  
 
   .OUTPUTS
@@ -31,7 +46,23 @@
 [CmdletBinding()]
 Param(
   # Parameter help description
-  [Parameter(Mandatory = $true)]
+  [Parameter(Mandatory = $false,ParameterSetName = 'All',position = 0)]
+  [Parameter(Mandatory = $false, ParameterSetName = 'Edge', Position = 0)]
+  [ValidateSet ('Chrome','Brave','All')]
+  [String]
+  $Browser = 'All',
+  # Parameter help description
+  [Parameter(Mandatory = $false, ParameterSetName = 'All', Position = 1)]
+  [Parameter(Mandatory = $false, ParameterSetName = 'Edge', Position = 1)]
+  [Switch]
+  $IncludeEdge,  
+  # Parameter help description
+  [Parameter(Mandatory = $true,ParameterSetName = 'Edge', Position = 2)]
+  [String]
+  $EdgeExtensionId,
+  # Parameter help description
+  [Parameter(Mandatory = $true,ParameterSetName = 'All', Position = 2)]
+  [Parameter(Mandatory = $true,ParameterSetName = 'Edge', Position = 3)]
   [String]
   $ExtensionId
 )
@@ -44,22 +75,24 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-
-write-log -message "Installing Extension $ExtensionID"
-
-$regKey = "HKLM:\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist"
-if(!(Test-Path $regKey)){
-  New-Item $regKey -Force
-  Write-Log -message "Created Reg Key $regKey"
-}
-$extensionsList = New-Object System.Collections.ArrayList
+function set-extensionkey {
+    param (
+        [parameter(mandatory = $true)][string]$reglocation,
+        [parameter(mandatory = $true)][string]$SetExtensionID
+    )
+    write-log -message "Installing Extension $SetExtensionID"
+    if(!(Test-Path $reglocation)){
+        New-Item $reglocation -Force
+        Write-Log -message "Created Reg Key $reglocation"
+    }
+    $extensionsList = New-Object System.Collections.ArrayList
     $number = 0
     $noMore = 0
     do{
         $number++
         Write-Log -message "Pass : $number"
         try{
-            $install = Get-ItemProperty $regKey -name $number -ErrorAction Stop
+            $install = Get-ItemProperty $reglocation -name $number -ErrorAction Stop
             $extensionObj = [PSCustomObject]@{
                 Name = $number
                 Value = $install.$number
@@ -72,15 +105,45 @@ $extensionsList = New-Object System.Collections.ArrayList
         }
     }
     until($noMore -eq 1)
-    $extensionCheck = $extensionsList | Where-Object {$_.Value -eq $extensionId}
+    $extensionCheck = $extensionsList | Where-Object {$_.Value -eq $SetExtensionID}
     if($extensionCheck){
         $result = "Extension Already Exists"
         Write-Log -message "Extension Already Exists"
     }else{
         $newExtensionId = $extensionsList[-1].name + 1
-        New-ItemProperty HKLM:\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist -PropertyType String -Name $newExtensionId -Value $extensionId
+        New-ItemProperty $reglocation -PropertyType String -Name $newExtensionId -Value $SetExtensionID
         Write-Log -message 'Installed'
         $result = "Installed"
     }
+    return $result
+}
+
+$BraveRegKey = "HKLM:\Software\Policies\BraveSoftware\Brave\ExtensionInstallForcelist"
+$ChromeRegKey = "HKLM:\SOFTWARE\Policies\Google\Chrome\ExtensionInstallForcelist"
+$EdgeRegKey = "HKLM:\Software\Policies\Microsoft\Edge\ExtensionInstallForcelist"
+
+Switch ($Browser) {
+    'Chrome' {$actions = $ChromeRegKey}
+    'Brave' {$actions = $BraveRegKey}
+    default {
+        if($IncludeEdge){
+            $actions = $ChromeRegKey, $BraveRegKey, $EdgeRegKey
+        } else {
+            $actions = $ChromeRegKey, $BraveRegKey
+        }
+    }
+}
+
+Foreach ($action in $actions) {
+    if ($action -notlike '*\Edge\*') {
+        set-extensionkey -reglocation $action -setextensionID $ExtensionId
+    } else {
+        set-extensionkey -reglocation $action -setextensionID $EdgeExtensionId
+    }
+
+
+}
+
+
 Clear-Files
 $result
