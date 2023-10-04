@@ -1,27 +1,23 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Ultimately will add extension to chromium based browsers, currently supports chrome
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Add a google chrome extension to the browser
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER ExtensionID
+  The extension ID gathered from the google store.
 
   .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  ExtensionID (Which can be found in the google store)  
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\Temp\Set-ChromiumExtension.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
-
-  .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Set-ChromiumExtension.ps1 -ExtensionID aeblfdkhhhdcdjpifhhbdiojplfjncoa
+  This command will add 1password extension to google chrome
 
   .NOTES
   This script was developed by

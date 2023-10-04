@@ -1,28 +1,21 @@
 # Execute-RepoScript
 
-Downloads and executes a repo script.
+Add a google chrome extension to the browser
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Set-ChromiumExtension.ps1 [-ExtensionID] <String> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Ultimately will add extension to chromium based browsers, currently supports chrome
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Set-ChromiumExtension.ps1 -ExtensionID aeblfdkhhhdcdjpifhhbdiojplfjncoa
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
-
-###  Example 2 
-```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
-```
-
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+This command will add 1password extension to google chrome
