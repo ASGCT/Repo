@@ -1,28 +1,21 @@
-# Execute-RepoScript
+# Set-FirefoxExtension
 
-Downloads and executes a repo script.
+  Install extensions on firefox browsers
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Set-FirefoxExtension.ps1 [-ExtensionUrl] <String> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+ Adds an extension to the Firefox browser
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Set-FirefoxExtension.ps1 -ExtensionUrl https://addons.mozilla.org/firefox/downloads/file/4168788/1password_x_password_manager-2.15.1.xpi
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
-
-###  Example 2 
-```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
-```
-
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Installs 1Password on firefox browsers.
