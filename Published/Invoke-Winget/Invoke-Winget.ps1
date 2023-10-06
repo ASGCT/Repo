@@ -1,21 +1,48 @@
 <#	
 .DESCRIPTION
-	Installs any package within the WinGet public repository running as SYSTEM. Can be packaged and deployed as a Win32App in Intune
-	Use as base for any install with WinGet. Simply specify the PackageID and log variables. 
+	Installs, Updates, or Uninstalls any package within the WinGet public repository running as SYSTEM.
+	
+.PARAMETER Action	
+	Defaults to Install, but can be changed between
+	Install - to install a package.
+	Uninstall - to remove a package.
+	Upgrade - to upgrade a package.
+.PARAMETER all
+	Used with the Upgrade action, specifies a global switch to upgrade all applicable packages.
 .PARAMETER PackageID
-Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID
+	Used with any action to specify a specific package.
+	Specify the WinGet ID. Use WinGet Search "SoftwareName" to locate the PackageID.
 .PARAMETER AdditionalInstallArgs
-Specify Additional Installation Arguments to pass to WinGet https://learn.microsoft.com/en-us/windows/package-manager/winget/install
-    .EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Google.Chrome"
-	.EXAMPLE
-powershell.exe -executionpolicy bypass -file Winget-InstallPackage.ps1 -PackageID "Notepad++.Notepad++"
-	.EXAMPLE
-DNSF
+	Specify Additional Installation Arguments to pass to WinGet https://learn.microsoft.com/en-us/windows/package-manager/winget/install
+.EXAMPLE
+	Invoke-Winget.ps1 -action Install -PackageID Google.Chrome 
+		Installs the google chrome browser.
+.EXAMPLE
+	Invoke-Winget.ps1 -action Uninstall -PackageID "Notepad++.Notepad++"
+		Uninstalls the Notepad++ application.
+.EXAMPLE
+	Invoke-Winget.ps1 -action Update -PackageID "Notepad++.Notepad++"
+		Updates the Notepad++ application.
+.EXAMPLE
+	Invoke-Winget.ps1 -action Update -all
+		Updates all found winget packages to the current version.	
 #>
 param (
-	[parameter(Mandatory=$true)][string]$PackageID,
-	[Parameter(Mandatory=$false)][string]$AdditionalInstallArgs
+	[parameter(Mandatory=$false,ParameterSetName='all',Position=0)]
+	[parameter(Mandatory=$false,ParameterSetName='Update',Position=0)]
+	[ValidateSet('Install','Uninstall','Update')]
+	[string]$action = 'Install',
+
+	[Parameter(Mandatory=$false,ParameterSetName='Update',Position=1)]
+	[switch]$all,
+
+	[parameter(Mandatory=$true,ParameterSetName='all',Position=1)]
+	[parameter(Mandatory=$false,ParameterSetName='Update',Position=2)]
+	[string]$PackageID,
+
+	[parameter(Mandatory=$false,ParameterSetName='all',Position=2)]
+	[parameter(Mandatory=$false,ParameterSetName='Update',Position=3)]
+	[string]$AdditionalInstallArgs
 )
 
 If (!($bootstraploaded)){
@@ -197,7 +224,20 @@ param (
 	$RunType,
 	$AdditionalArgs
 )
-	& $Winget $RunType --id $PackageID --source Winget --silent --scope Machine $AdditionalArgs --accept-package-agreements --accept-source-agreements 
+	switch ($action) {
+		'Install' {& $Winget $RunType --id $PackageID --silent --scope Machine $AdditionalArgs --accept-package-agreements --accept-source-agreements }
+
+		'Uninstall' {& $Winget $RunType --id $PackageID --silent --scope Machine $AdditionalArgs --accept-source-agreements}
+
+		'Update' { 
+			if(!($all)) {
+				& $Winget $RunType --id $PackageID --silent --scope Machine $AdditionalArgs --accept-source-agreements
+			} else {
+				& $Winget $RunType --all --silent --scope Machine --accept-source-agreements
+			}
+	
+		}
+	}
 }
 
 function Install-VisualC {
@@ -277,7 +317,7 @@ if (!$Winget)
 		try
 		{
 			Write-Log -message -message "Winget varibale $($winget)"
-            $Install = WingetRun -RunType install -PackageID $PackageID
+            $Install = WingetRun -RunType $action -PackageID $PackageID
 			Write-Log -message "$($Install | Out-String)"
 		}
 		Catch
@@ -296,7 +336,7 @@ if (!$Winget)
 			WingetTempDownload
 			try
 			{
-				$Install = WingetRun -RunType install -PackageID $PackageID
+				$Install = WingetRun -RunType $action -PackageID $PackageID
 				Write-Log -message "$($Install | Out-String)"
 			}
 			Catch
@@ -319,7 +359,7 @@ if (!$Winget)
 else
 {
 	Write-Log -message "Winget found at $($Winget)"
-	$Install = WingetRun -RunType install -PackageID $PackageID
+	$Install = WingetRun -RunType $action -PackageID $PackageID
 	Write-Log -message "$($Install | Out-String)"
 }
 Clear-Files
