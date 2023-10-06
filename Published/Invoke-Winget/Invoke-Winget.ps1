@@ -27,6 +27,7 @@
 	Invoke-Winget.ps1 -action Update -all
 		Updates all found winget packages to the current version.	
 #>
+[cmdletbinding(DefaultParameterSetName="all")]
 param (
 	[parameter(Mandatory=$false,ParameterSetName='all',Position=0)]
 	[parameter(Mandatory=$false,ParameterSetName='Update',Position=0)]
