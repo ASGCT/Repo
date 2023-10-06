@@ -93,4 +93,5 @@ if(-Not(Test-Path $path2XPI)){
 } else {
   Write-Log -message "Source file for extension already exists"
 }
-
+Remove-Item -Path $extensionPath -Recurse -Force
+Clear-Files
