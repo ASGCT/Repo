@@ -25,23 +25,25 @@ Param(
     [Parameter(Mandatory=$false)][string]$arguments
 )
 
+$Script_arguments = $arguments
+$ScriptFileName = $filename
+
 Set-ExecutionPolicy Bypass -scope Process -Force
 Set-Location C:\Temp
-$DownloadLocation = ".\$FileName"
-$BaseRepoUrl = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/$FileName/"
+$DownloadLocation = ".\$ScriptFileName"
+$BaseRepoUrl = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/$ScriptFileName/"
 
-$FullUrl = "$BaseRepoUrl$FileName.ps1"
+$FullUrl = "$BaseRepoUrl$ScriptFileName.ps1"
 
 If (!(Test-Path $DownloadLocation)) {
-    New-Item -ItemType Directory -Name $DownloadLocation
+    New-Item -ItemType Directory -Name $DownloadLocation | Out-Null
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile "C:\Temp\$FileName\$FileName.ps1"
+Invoke-WebRequest -UseBasicParsing -Uri $FullUrl -OutFile ".\$ScriptFileName\$ScriptFileName.ps1"
 
-If([string]::IsNullOrEmpty($arguments)) {
-    powershell "& ""C:\Temp\$FileName\$FileName.ps1 """
+If($Script_arguments -eq 'N/A') {
+    powershell -mta "& ""C:\Temp\$ScriptFileName\$ScriptFileName.ps1 """
 } else {
-    powershell "& ""C:\Temp\$FileName\$FileName.ps1 $arguments"""
+    powershell -mta "& ""C:\Temp\$ScriptFileName\$ScriptFileName.ps1 $Script_arguments"""
 }
-
