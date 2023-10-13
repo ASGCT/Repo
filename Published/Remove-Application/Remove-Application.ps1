@@ -57,6 +57,9 @@ Function Get-Application {
 
 }
 
+try {Get-Package $Name -ErrorAction Stop | Uninstall-Package -force} Catch {
+
+
 $UID = Get-Application 
 If (!($UID)) {
   Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
@@ -82,4 +85,5 @@ If (!($UID)) {
     Write-log -message "Can not guarantee that $Name was removed please review" -Type ERROR
     Clear-Files
     Return "$Name may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Application.log"
+}
 }
