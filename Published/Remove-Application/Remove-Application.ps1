@@ -75,7 +75,7 @@ $UID = $uid.replace("MsiExec.exe /I","")
 $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
 Write-log -message "Uninstall of $Name resulted in exit code: $result"
 
-$UID = get-Webtitan
+$UID = Get-Application
 If (!($UID)) {
     Write-Log -Message "Success - $Name has been removed from $env:COMPUTERNAME"
     Clear-Files
