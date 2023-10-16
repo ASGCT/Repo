@@ -286,38 +286,38 @@ $Winget = Get-ChildItem "$env:ProgramFiles\WindowsApps" -Recurse -File | Where-O
 if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 # If Visual C++ Redist. not installed, install it
 if (!$VisualC){ 
-Write-Log -message -message "Visual C++ X64 not found. Attempting to install" 
+Write-Log -Message "Visual C++ X64 not found. Attempting to install" 
 try {
 	Install-VisualC
 }
 Catch [System.InvalidOperationException]{
-Write-Log -message -message "Error installing visual c++ redistributable. Attempting install once more"
+Write-Log -Message "Error installing visual c++ redistributable. Attempting install once more"
 Start-Sleep -Seconds 5
 Install-VisualC
 }
 Catch {
-Write-Log -message -message "Failed to install visual c++ redistributable!"
-Write-Log -message -message $_
+Write-Log -Message "Failed to install visual c++ redistributable!"
+Write-Log -Message $_
 exit 1
 }
 $VisualC = Get-RegUninstallKey -DisplayName "Microsoft Visual C++ 2015-2022 Redistributable (x64)"
-if (!$VisualC){Write-Log -message -message "Visual C++ Redistributable not found!" ; exit 1}
-else {Write-Log -message -message "Successfully installed Microsoft Visual C++ 2015-2022 Redistributable (x64)"}
+if (!$VisualC){Write-Log -message  "Visual C++ Redistributable not found!" ; exit 1}
+else {Write-Log -message  "Successfully installed Microsoft Visual C++ 2015-2022 Redistributable (x64)"}
 }
 # If Winget is not found, attempt to install it, or download copy from baselob storage
 if (!$Winget)
 { 
 	if ($loggedOnUser)
 	{
-		Write-Log -message -message "Attempting to install Winget as System under $($loggedOnUser)"
+		Write-Log -message  "Attempting to install Winget as System under $($loggedOnUser)"
 		InstallWingetAsSystem
 		# If more than one version of Winget, select the latest
 		if ($Winget.count -gt 1) { $Winget = $Winget[-1] }
 		# If WinGet is not found, download copy from Blob storage
-		if (!$Winget){Write-Log -message -message "Downloading winget from blob storage" ;  WingetTempDownload }
+		if (!$Winget){Write-Log -message  "Downloading winget from blob storage" ;  WingetTempDownload }
 		try
 		{
-			Write-Log -message -message "Winget varibale $($winget)"
+			Write-Log -Message "Winget varibale $($winget)"
             $Install = WingetRun -RunType $action -PackageID $PackageID
 			Write-Log -message "$($Install | Out-String)"
 		}

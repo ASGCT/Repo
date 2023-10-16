@@ -74,24 +74,24 @@ $jsonContent = Get-Content "$ExtensionPath\manifest.json" | ConvertFrom-Json
 $NewValues = $jsonContent.applications.gecko.id
 
 Rename-Item -Path "$ExtensionPath\$($Extension[1]).xpi" -NewName "$NewValues.xpi"
-Remove-Item -Path $ExtensionPath -Exclude *.xpi -Recurse -Force
+Remove-Item -Path $ExtensionPath -Recurse -Force
 
 $path2xpi = $extensions + '\' + $NewValues
-#My installation item is now in the temp directory
-#I need to create the required folders
 
 If(-Not(Test-Path $distribution)){
-  New-Item $distribution -ItemType Directory | Out-Null
+  Write-Log -Message "Extension $NewValues does not exist"
+  return "Extension $NewValues does not exist"
 }
 If(-Not(Test-Path $extensions)){
-  New-Item $extensions -ItemType Directory | Out-Null
+  Write-Log -Message "Extension $NewValues does not exist"
+  return "Extension $NewValues does not exist"
 }
 
 if(-Not(Test-Path "$path2XPI.xpi")){
-  Copy-Item -Path "$extensionPath\$NewValues.xpi" -Destination "$path2xpi.xpi"
-  Write-Log -message "AddIn $NewValues created"
+  Write-Log -Message "Extension $NewValues does not exist"
+  return "Extension $NewValues does not exist"
 } else {
-  Write-Log -message "Source file for extension already exists"
+  Write-Log -message "Source file for extension $NewValues exists Removing"
+  remove-Item -Path "$path2xpi.xpi" -Force 
 }
-Remove-Item -Path $extensionPath -Recurse -Force
 Clear-Files
