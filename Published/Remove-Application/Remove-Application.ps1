@@ -48,7 +48,7 @@ If (!($bootstraploaded)){
 }
 
 Function Get-Application {
-  $GUID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.UrlInfoAbout -like "*$Name*" } | Select-Object -ExpandProperty UninstallString
+  $GUID = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.DisplayName -like "*$Name*" } | Select-Object -ExpandProperty UninstallString
   if(!$GUID) {
       Return $Null
   } else {
