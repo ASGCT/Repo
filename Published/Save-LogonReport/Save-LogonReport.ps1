@@ -43,7 +43,7 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-Add-TyAdd-Type @'
+Add-Type @'
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -93,7 +93,7 @@ for ( $i = 0; $i -lt 10; $i++ ) {
     $Idle = [PInvoke.Win32.UserInput]::IdleTime
     $LastStr = $Last.ToLocalTime().ToString("MM/dd/yyyy hh:mm tt")
     Write-Log -message ("^<-Start Result-^>")
-    Write-Log -message ("`nTest " + $i)
+    Write-Log -message ("Test " + $i)
     Write-Log -message ("   Last user keyboard/mouse input: " + $LastStr)
     Write-Log -message ("   Idle for " + $Idle.Days + " days, " + $Idle.Hours + " hours, " + $Idle.Minutes + " minutes, " + $Idle.Seconds + " seconds.")
     Write-Log -message ("^<-End Result-^>")
