@@ -61,42 +61,44 @@ try {
   Write-log -message "attempting package removal of $Name"
   Get-Package $Name -ErrorAction Stop | Uninstall-Package -force -ErrorAction Stop
 } Catch {
-  Write-log -message "attempting package removal of $Name with Ciminstance"
-  try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
-  Catch {Write-Log "Could not find Ciminstance for $Name"}
-  $UID = Get-Application 
-  Write-Log -Message "UID uninstall string is $UID"
+  Write-log -message "Could not removal of $Name with get-Package"
+}
+$UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
     Clear-Files
     Return "Success - $Name is not installed."
   }
 
-  $UID = Get-Application 
+Write-log -message "attempting package removal of $Name with Ciminstance"
+try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
+Catch {Write-Log "Could not find Ciminstance for $Name"}
+
+$UID = Get-Application 
+Write-Log -Message "UID uninstall string is $UID"
   If (!($UID)) {
     Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
     Clear-Files
     Return "Success - $Name is not installed."
   }
 
-  Write-Log -message "$Name Uninstall string found to be: $UID "
+Write-Log -message "$Name Uninstall string found to be: $UID "
 
-  Write-Log -message "Uninstalling $Name"
-  $UID = $uid.replace("MsiExec.exe /I","")
+Write-Log -message "Uninstalling $Name"
+$UID = $uid.replace("MsiExec.exe /I","")
 
-  $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
-  Write-log -message "Uninstall of $Name resulted in exit code: $result"
+$result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
+Write-log -message "Uninstall of $Name resulted in exit code: $result"
 
 
-  $UID = Get-Application
+$UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "Success - $Name has been removed from $env:COMPUTERNAME"
     Clear-Files
     Return "Success - $Name has been removed from $env:COMPUTERNAME"
 
-  } else {
+} else {
     Write-log -message "Can not guarantee that $Name was removed please review" -Type ERROR
     Clear-Files
     Return "$Name may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Application.log"
-  }
 }
