@@ -72,10 +72,10 @@ If($UID -Like '*.exe') {
   Write-Log -Message 'Executable installation found transposing silent options'
 
   $switches = '/S'
-  If ($UID -match 'C:\Program Files (x86)') {
+  If ($UID -match 'C:\\Program Files (x86)') {
     $UID.replace('Program Files (x86)', "'Program Files (x86)'")
   }
-  If ($UID -match 'C:\Program Files') {
+  If ($UID -match 'C:\\Program Files') {
     $UID.replace('Program Files', "'Program Files'")
   }
   foreach ($switch in $switches) {
