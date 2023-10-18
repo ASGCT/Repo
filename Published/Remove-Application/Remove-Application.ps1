@@ -56,10 +56,21 @@ Function Get-Application {
   }
 
 }
-
-try {Get-Package $Name -ErrorAction Stop | Uninstall-Package -force} Catch {
-#try wmiobject
-
+Write-Log "Attempting to remove $Name"
+try {
+  Write-log -message "attempting package removal of $Name"
+  Get-Package $Name -ErrorAction Stop | Uninstall-Package -force -ErrorAction Stop
+} Catch {
+  Write-log -message "attempting package removal of $Name with Ciminstance"
+  try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
+  Catch {Write-Log "Could not find Ciminstance for $Name"}
+  $UID = Get-Application 
+  Write-Log -Message "UID uninstall string is $UID"
+  If (!($UID)) {
+    Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+    Clear-Files
+    Return "Success - $Name is not installed."
+  }
 
   $UID = Get-Application 
   If (!($UID)) {
@@ -67,17 +78,6 @@ try {Get-Package $Name -ErrorAction Stop | Uninstall-Package -force} Catch {
     Clear-Files
     Return "Success - $Name is not installed."
   }
-  (Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"}).Uninstall()
-  $UID = Get-Application 
-  If (!($UID)) {
-    Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
-    Clear-Files
-    Return "Success - $Name is not installed."
-  }
-
-
-
-#Need to determine if it's an msi or an exe
 
   Write-Log -message "$Name Uninstall string found to be: $UID "
 
@@ -88,17 +88,15 @@ try {Get-Package $Name -ErrorAction Stop | Uninstall-Package -force} Catch {
   Write-log -message "Uninstall of $Name resulted in exit code: $result"
 
 
-
-
-$UID = Get-Application
-If (!($UID)) {
+  $UID = Get-Application
+  If (!($UID)) {
     Write-Log -Message "Success - $Name has been removed from $env:COMPUTERNAME"
     Clear-Files
     Return "Success - $Name has been removed from $env:COMPUTERNAME"
 
-} else {
+  } else {
     Write-log -message "Can not guarantee that $Name was removed please review" -Type ERROR
     Clear-Files
     Return "$Name may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Application.log"
-}
+  }
 }
