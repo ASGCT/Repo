@@ -67,6 +67,17 @@ If (!($UID)) {
   Return "Success - $Name is not installed."
 }
 
+#Need to determine if it's an msi or an exe
+If($UID -Like '.exe') {
+  Write-Log -Message 'Executable installation found transposing silent options'
+
+  $switches = '', '/S'
+
+  foreach ($switch in $switches) {
+    try{& $UID + $Switch -ErrorAction stop } catch { Write-Log -Message "switch $switch did not work"}
+  }
+}
+
 Write-Log -message "$Name Uninstall string found to be: $UID "
 
 Write-Log -message "Uninstalling $Name"
