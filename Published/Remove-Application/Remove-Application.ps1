@@ -68,7 +68,7 @@ If (!($UID)) {
 }
 
 #Need to determine if it's an msi or an exe
-If($UID -Like '.exe') {
+If($UID -Like '*.exe') {
   Write-Log -Message 'Executable installation found transposing silent options'
 
   $switches = '/S'
