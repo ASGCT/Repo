@@ -76,15 +76,17 @@ If($UID -Like '.exe') {
   foreach ($switch in $switches) {
     try{& $UID + $Switch -ErrorAction stop } catch { Write-Log -Message "switch $switch did not work"}
   }
+} else {
+  Write-Log -message "$Name Uninstall string found to be: $UID "
+
+  Write-Log -message "Uninstalling $Name"
+  $UID = $uid.replace("MsiExec.exe /I","")
+
+  $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
+  Write-log -message "Uninstall of $Name resulted in exit code: $result"
 }
 
-Write-Log -message "$Name Uninstall string found to be: $UID "
 
-Write-Log -message "Uninstalling $Name"
-$UID = $uid.replace("MsiExec.exe /I","")
-
-$result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
-Write-log -message "Uninstall of $Name resulted in exit code: $result"
 
 $UID = Get-Application
 If (!($UID)) {
