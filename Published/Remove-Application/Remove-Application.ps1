@@ -73,9 +73,22 @@ $UID = Get-Application
 Write-log -message "attempting package removal of $Name with Ciminstance"
 try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
 Catch {Write-Log "Could not find Ciminstance for $Name"}
+$UID = Get-Application 
+If (!($UID)) {
+  Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+  Clear-Files
+  Return "Success - $Name is not installed."
+}
+
 
 $uninstallstring = get-package *$Name* | ForEach-Object { $_.metadata['uninstallstring'] }
-Write-Log -message "wierd uninstall string $uninstallstring"
+Write-Log -message "uninstall string $uninstallstring"
+$isExeOnly = Test-Path -ErrorAction Ignore -LiteralPath $uninstallString
+if ($isExeOnly) { 
+  $uninstallString = "`"$uninstallString`"" 
+  $uninstallString += ' /quiet /norestart'
+  cmd.exe /c $uninstallstring
+} else {
 
 $UID = Get-Application 
 Write-Log -Message "UID uninstall string is $UID"
@@ -93,7 +106,7 @@ $UID = $uid.replace("MsiExec.exe /I","")
 $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
 Write-log -message "Uninstall of $Name resulted in exit code: $result"
 
-
+}
 $UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "Success - $Name has been removed from $env:COMPUTERNAME"
