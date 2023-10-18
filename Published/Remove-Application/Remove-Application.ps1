@@ -71,10 +71,10 @@ If (!($UID)) {
 If($UID -Like '.exe') {
   Write-Log -Message 'Executable installation found transposing silent options'
 
-  $switches = '', '/S'
+  $switches = '/S'
 
   foreach ($switch in $switches) {
-    try{& $UID + $Switch -ErrorAction stop } catch { Write-Log -Message "switch $switch did not work"}
+    & $UID.replace('"','') + $Switch 
   }
 } else {
   Write-Log -message "$Name Uninstall string found to be: $UID "
