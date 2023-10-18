@@ -58,30 +58,27 @@ Function Get-Application {
 }
 
 try {Get-Package $Name -ErrorAction Stop | Uninstall-Package -force} Catch {
+#try wmiobject
 
 
-$UID = Get-Application 
-If (!($UID)) {
-  Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
-  Clear-Files
-  Return "Success - $Name is not installed."
-}
+  $UID = Get-Application 
+  If (!($UID)) {
+    Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+    Clear-Files
+    Return "Success - $Name is not installed."
+  }
+  (Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"}).Uninstall()
+  $UID = Get-Application 
+  If (!($UID)) {
+    Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+    Clear-Files
+    Return "Success - $Name is not installed."
+  }
+
+
 
 #Need to determine if it's an msi or an exe
-If($UID -Like '*.exe') {
-  Write-Log -Message 'Executable installation found transposing silent options'
 
-  $switches = '/S'
-  If ($UID -match 'C:\\Program Files (x86)') {
-    $UID.replace('Program Files (x86)', "'Program Files (x86)'")
-  }
-  If ($UID -match 'C:\\Program Files') {
-    $UID.replace('Program Files', "'Program Files'")
-  }
-  foreach ($switch in $switches) {
-    & $UID.replace('"','') + $Switch 
-  }
-} else {
   Write-Log -message "$Name Uninstall string found to be: $UID "
 
   Write-Log -message "Uninstalling $Name"
@@ -89,7 +86,7 @@ If($UID -Like '*.exe') {
 
   $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
   Write-log -message "Uninstall of $Name resulted in exit code: $result"
-}
+
 
 
 
