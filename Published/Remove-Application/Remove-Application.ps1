@@ -83,10 +83,7 @@ If (!($UID)) {
 
 $uninstallstring = get-package *$Name* | ForEach-Object { $_.metadata['uninstallstring'] }
 Write-Log -message "uninstall string $uninstallstring"
-if ($uninstallstring -match '\s"') {
-  Write-Log -message $uninstallstring[0]
-  return
-}
+
 $isExeOnly = Test-Path -ErrorAction Ignore -LiteralPath $uninstallString
 if ($isExeOnly) { 
   $uninstallString = "`"$uninstallString`"" 
