@@ -86,7 +86,7 @@ Write-Log -message "uninstall string $uninstallstring"
 $isExeOnly = Test-Path -ErrorAction Ignore -LiteralPath $uninstallString
 if ($isExeOnly) { 
   $uninstallString = "`"$uninstallString`"" 
-  $uninstallString += ' /quiet /norestart'
+  $uninstallString += ' /S '
   cmd.exe /c $uninstallstring
 } else {
 
