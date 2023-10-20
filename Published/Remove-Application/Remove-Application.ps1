@@ -63,6 +63,9 @@ try {
 } Catch {
   Write-log -message "Could not removal of $Name with get-Package"
 }
+
+$Switches = ' /S'
+
 $UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
@@ -81,13 +84,13 @@ If (!($UID)) {
 }
 
 
-$uninstallstring = get-package *$Name* | ForEach-Object { $_.metadata['uninstallstring'] }
+$uninstallstring = get-package *$Name* -ErrorAction SilentlyContinue | ForEach-Object { $_.metadata['uninstallstring'] }
 Write-Log -message "uninstall string $uninstallstring"
 
-$isExeOnly = Test-Path -ErrorAction Ignore -LiteralPath $uninstallString
+$isExeOnly = Test-Path -ErrorAction SilentlyContinue -LiteralPath $uninstallString
 if ($isExeOnly) { 
   $uninstallString = "`"$uninstallString`"" 
-  $uninstallString += ' /S '
+  $uninstallString += $switches
   cmd.exe /c $uninstallstring
 } else {
 
