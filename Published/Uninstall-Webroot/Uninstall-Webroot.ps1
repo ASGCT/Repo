@@ -44,6 +44,10 @@ foreach ($guid in $guids) {
   Remove-WmiObject -path \\localhost\ROOT\SecurityCenter2:AntiVirusProduct.instanceGuid="$guid"
 }
 
+Write-Log -Message "Finalizing the process by attempting to run wrsa.exe."
+cmd /c 'C:\"Program Files (x86)"\webroot\wrsa.exe -Uninstall'
+Start-Sleep  -Seconds 60
+
 Write-Log -Message "Attempting to remove services."
 
 cmd /c 'sc delete WRSkyClient'
@@ -82,11 +86,6 @@ Write-Log -Message "Gathering Uninstallation registry entry for broken installat
 $Path = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall | Get-ItemProperty | Where-Object {$_.DisplayName -like "*Webroot*" } | Select-Object -ExpandProperty PSPath
 Write-Log -Message "Removing registy key: $Path."
 Remove-item -Path $Path -Force
-
-Write-Log -Message "Finalizing the process by attempting to run wrsa.exe."
-
-cmd /c 'C:\"Program Files (x86)"\webroot\wrsa.exe -Uninstall'
-Start-Sleep  -Seconds 30
 
 Write-Log -Message "Verification of removal."
 
