@@ -55,6 +55,7 @@ Write-Log -Message "Attempting to delete files."
 cmd /c 'del /f "C:\windows\system32\drivers\wrkrn.sys"'
 cmd /c 'del /f "C:\windows\system32\wruser.dll"'
 cmd /c 'del /f "C:\program files\webroot\*.* /y'
+cmd /c 'del /f "C:\program files\webroot\Core\*.* /y'
 cmd /c 'del /f "C:\Program Files (x86)\Webroot\*.*" /y'
 cmd /c 'del /f "C:\ProgramData\WRCore\*.*" /y'
 cmd /c 'del /f "C:\ProgramData\WRData\*.*" /y'
@@ -63,6 +64,7 @@ Write-Log -Message "Attempting to remove folders."
 
 cmd /c 'rd /s /q "C:\ProgramData\WRData\"'
 cmd /c 'rd /s /q "C:\Program Files\Webroot\"'
+cmd /c 'rd /s /q "C:\Program Files\Webroot\Core\"'
 cmd /c 'rd /s /q "C:\Program Files (x86)\Webroot\"'
 cmd /c 'rd /s /q "C:\ProgramData\WRCore\"'
 
