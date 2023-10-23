@@ -93,7 +93,7 @@ $failures = 0
 
 foreach ($verpath in $verpaths) {
 
-  if ((Get-ChildItem $verpath -File).count -gt 0) {
+  if ((Get-ChildItem $verpath -File -ErrorAction SilentlyContinue).count -gt 0) {
     $failures += 1
     $foundfiles += "$verpath"
   } 
