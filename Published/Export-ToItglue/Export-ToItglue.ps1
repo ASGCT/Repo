@@ -406,7 +406,7 @@ Function Sync_ADGroups {
     $Members = get-adgroupmember $Group
     $MembersTable = $members | Select-Object Name, distinguishedName | ConvertTo-Html -Fragment | Out-String
     foreach($Member in $Members){
-       $email = (get-aduser $member -Properties EmailAddress).EmailAddress
+       $email = (get-aduser $member -Properties EmailAddress).EmailAddress 2> $null
       #Tagging devices
       if($email){
         Write-Log -Message "Finding all related contacts - Based on email: $email"
@@ -494,12 +494,12 @@ Function Sync_ADGroups {
     if(!$ExistingFlexAsset){
       $FlexAssetBody.attributes.add('organization-id', $orgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-      Write-Log -message "Creating new flexible asset: $FlexAssetBody"
+      Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
     } else {
       $ExistingFlexAsset = $ExistingFlexAsset[-1]
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody
-      Write-Log "Updating Flexible Asset: $FlexAssetBody"
+      Write-Log "Updating Flexible Asset: `r$($FlexAssetBody.values)"
     }
   } 
 }
@@ -638,13 +638,13 @@ Function Sync_DHCPConfiguration {
   if (!$ExistingFlexAsset) {
       $FlexAssetBody.attributes.add('organization-id', $OrgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $($filterID.ID))
-      write-Log "  Creating DHCP Server Log into IT-Glue organisation $OrgID : `r$FlexAssetBody"
+      write-Log "  Creating DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
   }
   else {
       $ExistingFlexAsset = $ExistingFlexAsset | select-object -last 1
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id -data $FlexAssetBody
-      write-Log -Message "  Editing DHCP Server Log into IT-Glue organisation $OrgID : `r$FlexAssetBody" 
+      write-Log -Message "  Editing DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)" 
   }
 }
 
@@ -660,7 +660,7 @@ Function Sync_FilesharePermissions {
   If(Get-Module -ListAvailable -Name "NTFSSecurity") {Import-module "NTFSSecurity"} Else { install-module "NTFSSecurity" -Force; import-module "NTFSSecurity"}
   $AllsmbShares = get-smbshare | Where-Object {(@('Remote Admin','Default share','Remote IPC') -notcontains $_.Description)}
   foreach($SMBShare in $AllSMBShares){
-  $Permissions = get-item $SMBShare.path | get-ntfsaccess
+  $Permissions = get-item $SMBShare.path -ErrorAction SilentlyContinue | get-ntfsaccess
   $Permissions += get-childitem -Depth $RecursiveDepth -Recurse $SMBShare.path | get-ntfsaccess
   $FullAccess = $permissions | where-object {$_.'AccessRights' -eq "FullControl" -AND $_.IsInherited -eq $false -AND $_.'AccessControlType' -ne "Deny"}| Select-Object FullName,Account,AccessRights,AccessControlType  | ConvertTo-Html -Fragment | Out-String
   $Modify = $permissions | where-object {$_.'AccessRights' -Match "Modify" -AND $_.IsInherited -eq $false -and $_.'AccessControlType' -ne "Deny"}| Select-Object FullName,Account,AccessRights,AccessControlType  | ConvertTo-Html -Fragment | Out-String
@@ -671,7 +671,7 @@ Function Sync_FilesharePermissions {
   if($ReadOnly.Length /1kb -gt 64) { $ReadOnly = "The table is too long to display. Please see included CSV file."}
   if($Modify.Length /1kb -gt 64) { $Modify = "The table is too long to display. Please see included CSV file."}
   if($Deny.Length /1kb -gt 64) { $Deny = "The table is too long to display. Please see included CSV file."}
-  $PermCSV = ($Permissions | ConvertTo-Csv -NoTypeInformation -Delimiter ",") -join [Environment]::NewLine
+  $PermCSV = ($Permissions | ConvertTo-Csv -ErrorAction SilentlyContinue -NoTypeInformation -Delimiter ",") -join [Environment]::NewLine
   $Bytes = [System.Text.Encoding]::UTF8.GetBytes($PermCSV)
   $Base64CSV =[Convert]::ToBase64String($Bytes)    
   #Tagging devices
@@ -808,12 +808,12 @@ Function Sync_FilesharePermissions {
   if(!$ExistingFlexAsset){
   $FlexAssetBody.attributes.add('organization-id', $orgID)
   $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-  Write-Log -message "Creating new flexible asset: `r$FlexAssetBody"
-  New-ITGlueFlexibleAssets -data $FlexAssetBody
+  Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
+  New-ITGlueFlexibleAssets -data $FlexAssetBody -ErrorAction SilentlyContinue
   } else {
   $ExistingFlexAsset = $ExistingFlexAsset[-1]
   Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
-  Write-Log -Message "Updating Flexible Asset: `r$FlexAssetBody"
+  Write-Log -Message "Updating Flexible Asset: `r$($FlexAssetBody.values)"
   }
 }
 
@@ -931,13 +931,13 @@ Function Sync-HyperVConfiguration {
   if (!$ExistingFlexAsset) {
     $FlexAssetBody.attributes.add('organization-id', $OrgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $($filterID.ID))
-    write-Log -Message "Creating Hyper-v into IT-Glue organisation $OrgID : `r$FlexAssetBody"
+    write-Log -Message "Creating Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   }
   else {
     $ExistingFlexAsset = $ExistingFlexAsset[-1]
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id -data $FlexAssetBody
-    write-Log -message "Editing Hyper-v into IT-Glue organisation $OrgID : `r$FlexAssetBody"
+    write-Log -message "Editing Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
   }
 }
 
@@ -1064,12 +1064,12 @@ Function Sync-NetworkOverview {
   if(!$ExistingFlexAsset){
     $FlexAssetBody.attributes.add('organization-id', $orgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-    Write-Log -message "Creating new flexible asset: `r$FlexAssetBody"
+    Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   } else {
     $ExistingFlexAsset = $ExistingFlexAsset[-1]
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
-    Write-Log -message "Updating Flexible Asset: `r$FlexAssetBody"
+    Write-Log -message "Updating Flexible Asset: `r$($FlexAssetBody.values)"
   }
 }
 
@@ -1216,10 +1216,10 @@ $RAIDLayoutTable
   if(!$ExistingFlexAsset){
     $FlexAssetBody.attributes.add('organization-id', $orgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-    Write-Log "Creating new flexible asset:`r$FlexAssetBody"
+    Write-Log "Creating new flexible asset:`r$($FlexAssetBody.values)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   } else {
-    Write-Host "Updating Flexible Asset:`r$FlexAssetBody"
+    Write-Host "Updating Flexible Asset:`r$($FlexAssetBody.values)"
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
 }
 
@@ -1231,7 +1231,7 @@ Function Sync-SqlServerConfiguration {
   $FlexAssetName = "SQL Server"
   $Description = "SQL Server settings and configuration, Including databases."
 
-  import-module SQLPS
+  try {import-module SQLPS -ErrorAction Stop} catch { Write-Log 'module SQLPS is not available Skipping'; return}
   $Instances = Get-ChildItem "SQLSERVER:\SQL\$($ENV:COMPUTERNAME)"
   foreach ($Instance in $Instances) {
     $databaseList = get-childitem "SQLSERVER:\SQL\$($ENV:COMPUTERNAME)\$($Instance.Displayname)\Databases"
@@ -1342,11 +1342,11 @@ Function Sync-SqlServerConfiguration {
     if (!$ExistingFlexAsset) {
       $FlexAssetBody.attributes.add('organization-id', $orgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-      Write-Log -message "Creating new flexible asset:`r$FlexAssetBody"
+      Write-Log -message "Creating new flexible asset:`r$($FlexAssetBody.values)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
     }
     else {
-      Write-Log -Message "Updating Flexible Asset:`r$FlexAssetBody"
+      Write-Log -Message "Updating Flexible Asset:`r$($FlexAssetBody.values)"
       $ExistingFlexAsset = $ExistingFlexAsset[-1]
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody
     }
@@ -1364,11 +1364,12 @@ Add-ITGlueAPIKey $APIKEy
 
 Foreach ($syncitem in $syncitems) {
   switch ($syncitem) {
-    'AD Configuration' {Sync_ADConfiguration -OrgID $OrgID}
-    'AD Groups' {Sync_ADGroups -OrgID $OrgID}
-    'DHCP Configuration' {Sync_DHCPConfiguration -OrgID $OrgID}
-    'Fileshare Permissions' {Sync_FilesharePermissions -OrgID $OrgID}
+    'AD Configuration' {Write-log -message 'AD Configuration sync'; Sync_ADConfiguration -OrgID $OrgID}
+    'AD Groups' {Write-log -message 'AD Group sync';Sync_ADGroups -OrgID $OrgID}
+    'DHCP Configuration' {Write-log -message 'DHCP Configuration sync';Sync_DHCPConfiguration -OrgID $OrgID}
+    'Fileshare Permissions' {Write-log -message 'Fileshare Permissions sync';Sync_FilesharePermissions -OrgID $OrgID}
     'HyperV Configuration' {
+      Write-log -message 'HyperV Configuration sync'
       $hyperv = Get-WindowsOptionalFeature -FeatureName Microsoft-Hyper-V-All -Online
       # Check if Hyper-V is enabled
       if($hyperv.State -eq "Enabled") {
@@ -1378,9 +1379,9 @@ Foreach ($syncitem in $syncitems) {
         Write-Log -Message "Hyper-V is not enabled. - Skipping" -type ERROR
       }
     }
-    'Network Overview' {Sync-NetworkOverview -OrgID $OrgID}
-    'Server Overview' {Sync-ServerOverview -OrgID $OrgID}
-    'SQL Server Configuration' {Sync-SqlServerConfiguration -OrgID $OrgID}
+    'Network Overview' {Write-log -message 'Network Overview sync';Sync-NetworkOverview -OrgID $OrgID}
+    'Server Overview' {Write-log -message 'Server Overview sync';Sync-ServerOverview -OrgID $OrgID}
+    'SQL Server Configuration' {Write-log -message 'SQL Server Configuration sync';Sync-SqlServerConfiguration -OrgID $OrgID}
     default {return 'Unhandled Exception'}
   }
 }
