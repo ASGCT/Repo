@@ -406,7 +406,7 @@ Function Sync_ADGroups {
     $Members = get-adgroupmember $Group
     $MembersTable = $members | Select-Object Name, distinguishedName | ConvertTo-Html -Fragment | Out-String
     foreach($Member in $Members){
-       $email = (get-aduser $member -Properties EmailAddress).EmailAddress 2> $null
+       $email = try{(get-aduser $member -Properties EmailAddress).EmailAddress }catch { continue }
       #Tagging devices
       if($email){
         Write-Log -Message "Finding all related contacts - Based on email: $email"
@@ -494,12 +494,12 @@ Function Sync_ADGroups {
     if(!$ExistingFlexAsset){
       $FlexAssetBody.attributes.add('organization-id', $orgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-      Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
+      Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values | out-string -stream)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
     } else {
       $ExistingFlexAsset = $ExistingFlexAsset[-1]
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody
-      Write-Log "Updating Flexible Asset: `r$($FlexAssetBody.values)"
+      Write-Log "Updating Flexible Asset: `r$($FlexAssetBody.values | out-string -stream)"
     }
   } 
 }
@@ -638,13 +638,13 @@ Function Sync_DHCPConfiguration {
   if (!$ExistingFlexAsset) {
       $FlexAssetBody.attributes.add('organization-id', $OrgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $($filterID.ID))
-      write-Log "  Creating DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
+      write-Log "  Creating DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values | out-string -stream)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
   }
   else {
       $ExistingFlexAsset = $ExistingFlexAsset | select-object -last 1
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id -data $FlexAssetBody
-      write-Log -Message "  Editing DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)" 
+      write-Log -Message "  Editing DHCP Server Log into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values | out-string -stream)" 
   }
 }
 
@@ -808,12 +808,12 @@ Function Sync_FilesharePermissions {
   if(!$ExistingFlexAsset){
   $FlexAssetBody.attributes.add('organization-id', $orgID)
   $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-  Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
+  Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values | out-string -stream)"
   New-ITGlueFlexibleAssets -data $FlexAssetBody -ErrorAction SilentlyContinue
   } else {
   $ExistingFlexAsset = $ExistingFlexAsset[-1]
   Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
-  Write-Log -Message "Updating Flexible Asset: `r$($FlexAssetBody.values)"
+  Write-Log -Message "Updating Flexible Asset: `r$($FlexAssetBody.values | out-string -stream)"
   }
 }
 
@@ -931,13 +931,13 @@ Function Sync-HyperVConfiguration {
   if (!$ExistingFlexAsset) {
     $FlexAssetBody.attributes.add('organization-id', $OrgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $($filterID.ID))
-    write-Log -Message "Creating Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
+    write-Log -Message "Creating Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values | out-string -stream)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   }
   else {
     $ExistingFlexAsset = $ExistingFlexAsset[-1]
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id -data $FlexAssetBody
-    write-Log -message "Editing Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values)"
+    write-Log -message "Editing Hyper-v into IT-Glue organisation $OrgID : `r$($FlexAssetBody.values | out-string -stream)"
   }
 }
 
@@ -1064,12 +1064,12 @@ Function Sync-NetworkOverview {
   if(!$ExistingFlexAsset){
     $FlexAssetBody.attributes.add('organization-id', $orgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-    Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values)"
+    Write-Log -message "Creating new flexible asset: `r$($FlexAssetBody.values | out-string -stream)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   } else {
     $ExistingFlexAsset = $ExistingFlexAsset[-1]
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
-    Write-Log -message "Updating Flexible Asset: `r$($FlexAssetBody.values)"
+    Write-Log -message "Updating Flexible Asset: `r$($FlexAssetBody.values | out-string -stream)"
   }
 }
 
@@ -1216,10 +1216,10 @@ $RAIDLayoutTable
   if(!$ExistingFlexAsset){
     $FlexAssetBody.attributes.add('organization-id', $orgID)
     $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-    Write-Log "Creating new flexible asset:`r$($FlexAssetBody.values)"
+    Write-Log "Creating new flexible asset:`r$($FlexAssetBody.values | out-string -stream)"
     New-ITGlueFlexibleAssets -data $FlexAssetBody
   } else {
-    Write-Host "Updating Flexible Asset:`r$($FlexAssetBody.values)"
+    Write-Host "Updating Flexible Asset:`r$($FlexAssetBody.values | out-string -stream)"
     Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody}
 }
 
@@ -1342,11 +1342,11 @@ Function Sync-SqlServerConfiguration {
     if (!$ExistingFlexAsset) {
       $FlexAssetBody.attributes.add('organization-id', $orgID)
       $FlexAssetBody.attributes.add('flexible-asset-type-id', $FilterID.id)
-      Write-Log -message "Creating new flexible asset:`r$($FlexAssetBody.values)"
+      Write-Log -message "Creating new flexible asset:`r$($FlexAssetBody.values | out-string -stream)"
       New-ITGlueFlexibleAssets -data $FlexAssetBody
     }
     else {
-      Write-Log -Message "Updating Flexible Asset:`r$($FlexAssetBody.values)"
+      Write-Log -Message "Updating Flexible Asset:`r$($FlexAssetBody.values | out-string -stream)"
       $ExistingFlexAsset = $ExistingFlexAsset[-1]
       Set-ITGlueFlexibleAssets -id $ExistingFlexAsset.id  -data $FlexAssetBody
     }
