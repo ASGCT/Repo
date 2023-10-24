@@ -1,33 +1,45 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
-
-  .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Syncs Data from target computer to ITGlue
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .DESCRIPTION
+  Can sync the following flexible assets 'AD Configuration','AD Groups', 'DHCP Configuration', 'Fileshare Permissions', 'HyperV Configuration', 'Network Overview', 'Server Overview', 'SQL Server Configuration'
+  Certain Items may be "skipped" due to lack of roles, hyperv configuration only works on a hyperV host.
+  Sql Server Configuration only works on servers with Sql.
+
+  .PARAMETER ApiKey
+  This is the Api Key associated with your ITGlue instance it is specific to the msp
+  Api Keys should never be included in any public facing script, therefore it is supplied to the script by the RMM Platform.
+
+  .PARAMETER OrgID
+  This is the Organization Identifier associated with your ITGlue instance for your specific client it can be found when navigating to the client in ItGlue in the navigation bar.
+  Organization Identifiers will change with each different client, therefore OrgId's will be supplied in the RMM Platform when running the script.
+
+  .PARAMETER SyncItems
+  Syncronization Items are the specific items that you want to sync.
+  There is error handling built into the script so non-applicable items will not run on devices that do not support them.
+  However it is recommended process to only select the necessary items for what you are looking to do.
+  Potential items are as follows
+  'AD Configuration', 'AD Groups', 'DHCP Configuration', 'Fileshare Permissions', 'HyperV Configuration', 'Network Overview', 'Server Overview', 'SQL Server Configuration'
 
   .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  ApiKey
+  OrgID
+  SyncItems
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\Temp\Export-ToItglue.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
-
-  .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Export-ToItglue.ps1 <Secret ApiKey> <OrgID> <SyncItems[]>
+  Syncronizes sync items to ItGlue for the Organization Id provided
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  October 24, 2023
   For
   ASGCT
 #>

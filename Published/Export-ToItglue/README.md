@@ -1,28 +1,30 @@
-# Execute-RepoScript
+# Export-ToItglue
 
-Downloads and executes a repo script.
+  Can sync the following flexible assets 'AD Configuration','AD Groups', 'DHCP Configuration', 'Fileshare Permissions', 'HyperV Configuration', 'Network Overview', 'Server Overview', 'SQL Server Configuration'
+  Certain Items may be "skipped" due to lack of roles, hyperv configuration only works on a hyperV host.
+  Sql Server Configuration only works on servers with Sql.
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Export-ToItglue.ps1 [-ApiKey] <String> [-OrgID] <Int32> [-SyncItems] <String[]> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Syncs Data from target computer to ITGlue
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Export-ToItglue.ps1 jklds;fgiodgjksldf;gjhifdo 12565 'AD Configuration','AD Groups', 'DHCP Configuration'
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+Syncs AD Configuration, AD Groups, and DHCP Configuration to ITGlue for client 12565.
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+Export-ToItglue.ps1 -ApiKey jklds;fgiodgjksldf;gjhifdo -OrgID 12565 -SyncItems 'AD Configuration','AD Groups', 'DHCP Configuration', 'Fileshare Permissions', 'HyperV Configuration', 'Network Overview', 'Server Overview', 'SQL Server Configuration'
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Syncs all available items to ITglue for client 12565.
