@@ -103,7 +103,7 @@ if ($users -eq 'All') {
   }
 } else {
   Foreach ($User in $Users) {
-    $TargetSession = $ActiveSessions | Where-Object {$_.UserName -eq $User}
+    $TargetSession = $ActiveSessions | Where-Object {$_.UserName -match "$User"}
     Write-log -Message "Logging off Session: `r$($TargetSession | Out-String)"
     logoff.exe $TargetSession.ID
     $verifySessions = get-session
