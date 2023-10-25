@@ -1,28 +1,30 @@
-# Execute-RepoScript
+# New-PcName
 
-Downloads and executes a repo script.
+Renames a domain or local workgroup computer.
+Will force a reboot or not force a reboot.
+Does not pass plain text passwords
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+New-PcName.ps1 [-NewName] <String> [-UserName] <String> [-Password] <SecureString> [-Reboot] <Switch> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Renames a computer
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+New-PcName.ps1 -NewName 'Something' -UserName 'AdminUser' -Password Securepw -Restart
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+  Renames the computer to Something restarting the machine to apply it.
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+New-PcName.ps1 -NewName 'Something' -UserName 'AdminUser' -Password Securepw
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+  Will apply the new name of Something after the computer reboots.
