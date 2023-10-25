@@ -91,3 +91,4 @@ if (!$restart){
     Write-Log -message 'Computer is part of a domian using domain credentials'
   }
 }
+Clear-Files
