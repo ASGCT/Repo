@@ -37,7 +37,7 @@ Param(
   [Parameter(Mandatory=$true, Position=0)][String]$NewName,
   [Parameter(Mandatory=$true, Position=1)][String]$UserName,
   [Parameter(Mandatory=$true, Position=2)][securestring]$Password,
-  [Parameter(Mandatory=$false, Postion=3)][Switch]$Restart
+  [Parameter(Mandatory=$false)][Switch]$Restart
 )
 
 If (!($bootstraploaded)){
