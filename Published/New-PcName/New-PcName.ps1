@@ -1,33 +1,47 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Renames a computer
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Renames a domain or local workgroup computer.
+  Will force a reboot or not force a reboot.
+  Does not pass plain text passwords
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER NewName
+  The New Name desired for the computer.
+
+  .PARAMETER UserName
+  The username of an administrator account that has rights to change the name.
+
+  .PARAMETER Password
+  The account password passed as a secure string, Plain text passwords will not work.
+
+  .PARAMETER Restart
+  Use this switch to toggle rebooting the computer.
 
   .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  NewName [string]
+  UserName [string]
+  Password [SecureString]
+  Restart [Switch]
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\Temp\New-PcName.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
+  PS> .\New-PcName.ps1 -NewName 'Something' -UserName 'AdminUser' -Password Securepw -Restart
+  Renames the computer to Something restarting the machine to apply it.
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\New-PcName.ps1 -NewName 'Something' -UserName 'AdminUser' -Password Securepw 
+  Will apply the new name of Something after the computer reboots.
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  October 25, 2023
   For
   ASGCT
 #>
