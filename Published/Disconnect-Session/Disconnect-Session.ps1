@@ -116,3 +116,4 @@ if ($users -eq 'All') {
 
   }
 } 
+Clear-Files

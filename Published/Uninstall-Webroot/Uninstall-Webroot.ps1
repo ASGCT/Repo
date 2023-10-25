@@ -102,7 +102,9 @@ foreach ($verpath in $verpaths) {
 }
 if ($failures -gt 0) {
   Write-Log -message "Can not guarantee that Webroot was removed completely files still exist in: $foundfiles " -type ERROR
+  Clear-Files
   Return "Needs attention"
   }
 Write-Log -message "Successful forceful removal of Webroot"
+Clear-Files
 Return "Success"
