@@ -49,6 +49,7 @@ If (!($bootstraploaded)){
 #I want to hash the service name and I want to add the date/time of last check and i want the interval
 #I am thinking of utilizing the registry for this 
 # set up registry
+Write-Log -message 'Setting up monitor in registry'
 Set-Location HKLM:
 If(!(Test-Path .\software\asg\Internal-Monitor\$ServiceName)){
   New-Item .\software\asg\Internal-Monitor -Name $ServiceName -force
@@ -61,6 +62,7 @@ If(!(Test-Path .\software\asg\Internal-Monitor\$ServiceName)){
   Pop-Location
 }
 
+Write-Log -message 'Adjusting Script'
 #create the scheduled task
 $Script = @"
 
@@ -138,6 +140,7 @@ foreach (`$monitor in `$monitors){
 #I need to save this file somewhere
 $filelocation = 'C:\ProgramData\ASG\Scripts'
 $ScriptFileName = 'ServiceWatcher.ps1'
+Write-Log -message "Saving Script to : $filelocation\$ScriptFileName"
 if (!(Test-Path -LiteralPath $filelocation)) {
   New-Item -Path $filelocation -ItemType Directory
 }
@@ -147,7 +150,7 @@ if (!(Test-Path -Path "$filelocation\$ScriptFileName")){
 } else {
   set-content -Path "$filelocation\$ScriptFileName" -Value $script -Force
 }
-
+Write-Log -message 'Creating Scheduled task'
 #I need to make a scheduled task
 $filelocation = 'C:\ProgramData\ASG\Scripts'
 $ScriptFileName = 'ServiceWatcher.ps1'
@@ -163,5 +166,7 @@ $trigger = New-ScheduledTaskTrigger `
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
 $User= "NT AUTHORITYSYSTEM"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -RunLevel Highest -Force
+$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings -User $User -RunLevel Highest -Force
+Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg 
+
+#need to verify scheduled task creation.
