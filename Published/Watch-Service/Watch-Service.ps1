@@ -161,6 +161,7 @@ $trigger = New-ScheduledTaskTrigger `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5)
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
+$User= "NT AUTHORITYSYSTEM"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-$ST = New-ScheduledTask -Action $action -Trigger $trigger -Settings $settings
-Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg
+$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
+Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -RunLevel Highest -Force
