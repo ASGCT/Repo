@@ -36,19 +36,40 @@ Param(
         [Parameter(Mandatory=$true)][String]$SiteKey,
         [Parameter(Mandatory=$False)][Switch]$WhiteLabel
 )
+
+If (!($bootstraploaded)){
+    Set-ExecutionPolicy Bypass -scope Process -Force
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    $BaseRepoUrl = (Invoke-webrequest -UseBasicParsing -URI "https://raw.githubusercontent.com/ASGCT/Repo/main/Environment/Bootstrap.ps1").Content
+    $scriptblock = [scriptblock]::Create($BaseRepoUrl)
+    Invoke-Command -ScriptBlock $scriptblock
+
+}
+
+$Package = Get-Package 'DNSFilterAgent' -ErrorAction SilentlyContinue
+
+If ($Package) {
+    Write-Log -message 'DNSFilter is installed'
+    Return 'Already Installed'
+}
+
 #Determine WhiteLabel
 If ($WhiteLabel) {
     $BaseName = 'DNS_Agent_Setup'
 } else {
     $BaseName = 'DNSFilter_Agent_Setup'
 }
+Write-Log -message "Basename is : $BaseName"
 #get bitness
 if (!([Environment]::Is64BitProcess)){
     $BaseName = "$BaseName" + '_X86'
 }
+Write-log -message "Verified basename is : $Basename"
 $FileName = "$BaseName.msi"
 $weburl = "https://download.dnsfilter.com/User_Agent/Windows/$FileName"
+Write-log -message "WebUrl is : $WebUrl"
 $DownloadLocation = ".\$BaseName"
+Write-log -message "Downloading to  : $DownloadLocation"
 If(!(Test-Path $DownloadLocation)) {
     New-Item -ItemType Directory -Name "$DownloadLocation" -Force
 }
@@ -56,4 +77,14 @@ If(!(Test-Path $DownloadLocation)) {
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -UseBasicParsing -Uri $weburl -OutFile "$DownloadLocation\$FileName"
 #Execute file
+Write-Log -Message "Installing"
 msiexec.exe /qn /i "C:\Temp\$BaseName\$FileName" NKEY="$SiteKey"
+
+Write-Log -Message "Verifying..."
+
+$Package = Get-Package 'DNSFilterAgent' -ErrorAction SilentlyContinue
+
+If ($Package) {
+    Write-Log -message 'DNSFilter is installed'
+    Return 'Installed'
+}
