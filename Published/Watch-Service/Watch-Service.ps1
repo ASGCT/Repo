@@ -149,8 +149,18 @@ if (!(Test-Path -Path "$filelocation\$ScriptFileName")){
 }
 
 #I need to make a scheduled task
-$Trigger = New-ScheduledTaskTrigger -Once -At (get-date) -RepetitionDuration ([System.TimeSpan]::MaxValue) -RepetitionInterval (New-TimeSpan -Minutes 5)
-$action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"$filelocation\$Scriptfilename`""
+$filelocation = 'C:\ProgramData\ASG\Scripts'
+$ScriptFileName = 'ServiceWatcher.ps1'
+#I need to make a scheduled task
+$scheduleObject = New-Object -ComObject schedule.service
+$scheduleObject.connect()
+$rootFolder = $scheduleObject.GetFolder("\")
+$rootFolder.CreateFolder("ASG")
+$trigger = New-ScheduledTaskTrigger `
+    -Once `
+    -At (Get-Date) `
+    -RepetitionInterval (New-TimeSpan -Minutes 5)
+$action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 $ST = New-ScheduledTask -Action $action -Trigger $trigger -Settings $settings
-Register-ScheduledTask EncryptSyncTEST -InputObject $ST
+Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg
