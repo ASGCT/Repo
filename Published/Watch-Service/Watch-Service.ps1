@@ -158,15 +158,15 @@ $ScriptFileName = 'ServiceWatcher.ps1'
 $scheduleObject = New-Object -ComObject schedule.service
 $scheduleObject.connect()
 $rootFolder = $scheduleObject.GetFolder("\")
-$rootFolder.CreateFolder("ASG")
+$rootFolder.CreateFolder("ASG") | Out-Null
 $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5)
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
-$User= "NT AUTHORITYSYSTEM"
-$settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings -User $User -RunLevel Highest -Force
-Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg 
+$User= "NTAuthority\SYSTEM"
+$settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable .\.git-RunLevel Highest
+$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
+Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -Force
 
 #need to verify scheduled task creation.
