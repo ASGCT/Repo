@@ -100,7 +100,7 @@ foreach (`$monitor in `$monitors){
     `$monitorLastRun = `$monitor | Get-ItemPropertyValue -Name LastRun
     Write-Log -message "Interval is `$monitorLastRun"
     Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addseconds(`$MonitorInterval))"
-    if((Get-date) -gt (([datetime]::Parse(`$monitorLastRun)).addseconds(`$MonitorInterval))) {
+    if((Get-date) -gt (([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))) {
       Write-Log -message "`$monitor will run"
       Write-Log -message "Monitor Name is : `$(`$monitor.PSChildName)"
       #need to try next line and error out if service isn't found make a event log
@@ -158,7 +158,7 @@ $ScriptFileName = 'ServiceWatcher.ps1'
 $scheduleObject = New-Object -ComObject schedule.service
 $scheduleObject.connect()
 $rootFolder = $scheduleObject.GetFolder("\")
-$rootFolder.CreateFolder("ASG") | Out-Null
+try {$rootFolder.CreateFolder("ASG")} catch {Write-Log -Message 'ASG Scheduled Task Folder Exists'}
 $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
