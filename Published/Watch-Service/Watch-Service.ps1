@@ -165,7 +165,7 @@ $trigger = New-ScheduledTaskTrigger `
     -RepetitionInterval (New-TimeSpan -Minutes 5)
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
 $User= "NTAuthority\SYSTEM"
-$settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable .\.git-RunLevel Highest
+$settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunLevel Highest
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
 Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -Force
 
