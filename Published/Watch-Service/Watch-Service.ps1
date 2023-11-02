@@ -158,7 +158,7 @@ $ScriptFileName = 'ServiceWatcher.ps1'
 $scheduleObject = New-Object -ComObject schedule.service
 $scheduleObject.connect()
 $rootFolder = $scheduleObject.GetFolder("\")
-$rootFolder.CreateFolder("ASG") | Out-Null
+try {$rootFolder.CreateFolder("ASG")} catch {Write-Log -Message 'ASG Scheduled Task Folder Exists'}
 $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
