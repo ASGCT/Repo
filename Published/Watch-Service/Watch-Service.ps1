@@ -150,7 +150,7 @@ if (!(Test-Path -Path "$filelocation\$ScriptFileName")){
 } else {
   set-content -Path "$filelocation\$ScriptFileName" -Value $script -Force
 }
-Write-Log -message 'Creating Scheduled task'
+Write-Log -message 'Creating Scheduled Job'
 #I need to make a scheduled task
 $filelocation = 'C:\ProgramData\ASG\Scripts'
 $ScriptFileName = 'ServiceWatcher.ps1'
@@ -167,6 +167,6 @@ $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle 
 $User= "NTAuthority\SYSTEM"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -RunLevel Highest v-Force
+Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -RunLevel Highest -Force
 
 #need to verify scheduled task creation.
