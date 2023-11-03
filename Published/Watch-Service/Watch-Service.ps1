@@ -153,7 +153,7 @@ foreach (`$monitor in `$monitors){
         Continue
       } else {
         Write-Log -message "`$(`$Service.name) is in `$(`$Service.Status) state"
-        If (`$service.Status -ne 'Running'){
+        If (`$service.Status -notin ('Running', 'StartPending')){
           Write-Log -message 'Restarting service'
           Try {`$service|Restart-service -Force -ErrorAction stop}
           Catch {
