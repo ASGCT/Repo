@@ -49,6 +49,7 @@ If (!($bootstraploaded)){
 #I want to hash the service name and I want to add the date/time of last check and i want the interval
 #I am thinking of utilizing the registry for this 
 # set up registry
+
 Write-Log -message 'Setting up monitor in registry'
 Set-Location HKLM:
 If(!(Test-Path .\software\asg\Internal-Monitor\$ServiceName)){
@@ -92,7 +93,10 @@ function WriteNew-Eventlog {
   
   
 `$Monitors = Get-ChildItem -Path HKLM:\SOFTWARE\asg\Internal-Monitor\
-  
+if ((Get-Item -Path 'C:\Temp\Watch-Service.log').CreationTime -lt (Get-Date).AddDays(-1)){
+  Remove-Item -Path 'C:\Temp\Watch-Service.log' -Force
+  }
+Write-log -message '---------------New Run-----------------' 
 foreach (`$monitor in `$monitors){
     `$service = ''
     `$MonitorInterval = `$monitor | Get-ItemPropertyValue -name Interval
@@ -132,12 +136,12 @@ foreach (`$monitor in `$monitors){
       } else {
         Write-Log -message "`$(`$service.Name) is running"
       }
-    } else {
+    } 
+  } else {
     Write-Log -message "`$monitor Is not due - skipping"
-    }
-    `$Monitor | Set-ItemProperty -Name LastRun -value `$(Get-date -format s) -Force
   }
-  
+  Write-Log -Message "`$Monitor LastRun time is being set to `$(Get-date -format s)"
+  `$Monitor | Set-ItemProperty -Name LastRun -value `$(Get-date -format s) -Force
 }
 "@
 
