@@ -178,3 +178,4 @@ $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings
 try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -User $User -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
 
 #need to verify scheduled task creation.
+Clear-Files
