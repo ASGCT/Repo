@@ -93,8 +93,8 @@ function WriteNew-Eventlog {
   
   
 `$Monitors = Get-ChildItem -Path HKLM:\SOFTWARE\asg\Internal-Monitor\
-if ((Get-Item -Path 'C:\Temp\Watch-Service.log').CreationTime -lt (Get-Date).AddDays(-1)){
-  Remove-Item -Path 'C:\Temp\Watch-Service.log' -Force
+if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\Watch-Service.log').CreationTime -lt (Get-Date).AddDays(-1)){
+  Remove-Item -Path 'C:\ProgramData\ASG\Script-Logs\Watch-Service.log' -Force
   }
 Write-log -message '---------------New Run-----------------' 
 foreach (`$monitor in `$monitors){
@@ -103,13 +103,13 @@ foreach (`$monitor in `$monitors){
     Write-Log -message "Interval is `$monitorinterval"
     `$monitorLastRun = `$monitor | Get-ItemPropertyValue -Name LastRun
     Write-Log -message "Interval is `$monitorLastRun"
-    Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addseconds(`$MonitorInterval))"
+    Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))"
     if((Get-date) -gt (([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))) {
       Write-Log -message "`$monitor will run"
       Write-Log -message "Monitor Name is : `$(`$monitor.PSChildName)"
       #need to try next line and error out if service isn't found make a event log
       `$service = try {Get-service -Name `$monitor.PSChildName -ErrorAction stop} Catch {"Service `$(`$Service.name) does not exist"}
-      If (`$service -eq "Service `$(`$Service.name) does not exist") {
+      If (`$service -eq "Service `$(`$monitor.PSChildName) does not exist") {
         WriteNew-Eventlog -EventID 7001 -EntryType 'Error' -Message `$service
         Continue
       } else {
@@ -139,6 +139,7 @@ foreach (`$monitor in `$monitors){
     } 
   } else {
     Write-Log -message "`$monitor Is not due - skipping"
+    Continue
   }
   Write-Log -Message "`$Monitor LastRun time is being set to `$(Get-date -format s)"
   `$Monitor | Set-ItemProperty -Name LastRun -value `$(Get-date -format s) -Force
@@ -172,10 +173,10 @@ $trigger = New-ScheduledTaskTrigger `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5) 
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
-$User=  "LOCAL SERVICE"
+$Principal = New-ScheduledTaskPrincipal -UserId "LOCAL SERVICE" -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
-$ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -User $User -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
+$ST = New-ScheduledTask -Action $action -Trigger $trigger -Principal $Principal -Settings $settings 
+try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
 
 #need to verify scheduled task creation.
 Clear-Files
