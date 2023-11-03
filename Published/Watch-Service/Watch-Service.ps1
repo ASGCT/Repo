@@ -166,7 +166,7 @@ foreach (`$monitor in `$monitors){
             Write-Log -message 'Restarting process'
             start-service -Name `$service.Name
           }
-        if ((Get-service `$Service.name).Status -ne 'Running'){
+        if ((Get-service `$Service.name).Status -notin ('Running', 'StartPending'){
           Write-Log -message "Could not start `$(`$Service.name)"
           WriteNew-Eventlog -EventID 7003 -EntryType 'ERROR' -Message "Could not start `$(`$Service.name) after stopped state"
         }else {
