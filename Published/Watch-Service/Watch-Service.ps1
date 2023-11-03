@@ -172,9 +172,9 @@ $trigger = New-ScheduledTaskTrigger `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5) 
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
-$User=  "LOCAL SERVICE"
+$User=  New-ScheduledTaskPrincipal -UserId "LOCAL SERVICE" -RunLevel Highest -LogonType ServiceAccount
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -User $User -RunLevel Highest -Force} catch {Write-Log -message 'Scheduled task already exists'}
+try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -Principal $User -RunLevel Highest -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
 
 #need to verify scheduled task creation.
