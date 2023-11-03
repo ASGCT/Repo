@@ -175,6 +175,6 @@ $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPol
 $User="LOCAL SERVICE"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg - $User -RunLevel Highest -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
+try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg - $User -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
 
 #need to verify scheduled task creation.
