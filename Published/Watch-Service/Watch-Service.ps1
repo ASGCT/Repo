@@ -170,12 +170,11 @@ try {$rootFolder.CreateFolder("ASG")} catch {Write-Log -Message 'ASG Scheduled T
 $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
-    -RepetitionInterval (New-TimeSpan -Minutes 5) `
-    -RunLevel Highest
+    -RepetitionInterval (New-TimeSpan -Minutes 5) 
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
-$User= "LOCAL SERVICE"
+$User="LOCAL SERVICE"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
-try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST -TaskPath asg -User $User -Force} catch {Write-Log -message 'Scheduled task already exists'}
+try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg - $User -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
 
 #need to verify scheduled task creation.
