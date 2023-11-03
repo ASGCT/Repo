@@ -11,10 +11,10 @@
         $scriptLog = "$LogName.log"
         $Scriptlogpath = '.\Script-logs'
         if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Script-Logs")) {
-            New-Item -ItemType Directory -Name $Scriptlogpath | Out-Null
+            New-Item -ItemType Directory -Name Script-Logs | Out-Null
         }
         if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Script-Logs\$scriptLog")) {
-            New-Item -ItemType File -Path $Scriptlogpath -Name $scriptLog | Out-Null
+            New-Item -ItemType File -Path Script-Logs -Name $scriptLog | Out-Null
             $MyDate = Get-Date -Format s
             Add-Content -Path "$Scriptlogpath\$scriptLog" -Value "----------------------------------------------"
             Add-Content -Path "$Scriptlogpath\$scriptLog" -Value "$MyDate - $Type - $MyLogName "
