@@ -170,7 +170,7 @@ try {$rootFolder.CreateFolder("ASG")} catch {Write-Log -Message 'ASG Scheduled T
 $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
-    -RepetitionInterval (New-TimeSpan -Minutes 5)
+    -RepetitionInterval (New-TimeSpan -Minutes 5) `
     -RunLevel Highest
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
 $User= "LOCAL SERVICE"
