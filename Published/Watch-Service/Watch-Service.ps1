@@ -136,6 +136,7 @@ foreach (`$monitor in `$monitors){
   } else {
     Write-Log -message "`$monitor Is not due - skipping"
   }
+  Write-Log -Message "`$Monitor LastRun time is being set to `$(Get-date -format s)"
   `$Monitor | Set-ItemProperty -Name LastRun -value `$(Get-date -format s) -Force
 }
 "@
