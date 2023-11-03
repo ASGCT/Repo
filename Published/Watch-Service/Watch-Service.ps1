@@ -103,7 +103,7 @@ foreach (`$monitor in `$monitors){
     Write-Log -message "Interval is `$monitorinterval"
     `$monitorLastRun = `$monitor | Get-ItemPropertyValue -Name LastRun
     Write-Log -message "Interval is `$monitorLastRun"
-    Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addseconds(`$MonitorInterval))"
+    Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))"
     if((Get-date) -gt (([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))) {
       Write-Log -message "`$monitor will run"
       Write-Log -message "Monitor Name is : `$(`$monitor.PSChildName)"
