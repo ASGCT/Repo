@@ -143,7 +143,7 @@ foreach (`$monitor in `$monitors){
     `$monitorLastRun = `$monitor | Get-ItemPropertyValue -Name LastRun
     Write-Log -message "Last Ran on: `$monitorLastRun"
     Write-Log -message "Checking datetime : `$(([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))"
-    if((Get-date) -gt (([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))) {
+    if((Get-date) -ge (([datetime]::Parse(`$monitorLastRun)).addMinutes(`$MonitorInterval))) {
       Write-Log -message "`$monitor will run"
       Write-Log -message "Monitor Name is : `$(`$monitor.PSChildName)"
       #need to try next line and error out if service isn't found make a event log
