@@ -9,11 +9,11 @@
         $MyLogName = "$($MyInvocation.ScriptName)"
         $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
         $scriptLog = "$LogName.log"
-        $Scriptlogpath = '.\log'
-        if (!(Test-Path -LiteralPath 'C:\ProgramData\ASG\Logs')) {
+        $Scriptlogpath = '.\Script-logs'
+        if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Script-Logs")) {
             New-Item -ItemType Directory -Name $Scriptlogpath | Out-Null
         }
-        if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Logs\$scriptLog")) {
+        if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Script-Logs\$scriptLog")) {
             New-Item -ItemType File -Path $Scriptlogpath -Name $scriptLog | Out-Null
             $MyDate = Get-Date -Format s
             Add-Content -Path "$Scriptlogpath\$scriptLog" -Value "----------------------------------------------"
