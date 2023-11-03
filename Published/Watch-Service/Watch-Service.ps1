@@ -158,11 +158,11 @@ foreach (`$monitor in `$monitors){
           Try {`$service|Restart-service -Force -ErrorAction stop}
           Catch {
             Write-Log -message "Forcefully killing `$service"
-            `$PID = try{Get-CimInstance -ClassName 'Win32_service' -Filter "Name LIKE '`$(`$Service.Name)'" -erroraction stop | Select-Object -ExpandProperty ProcessID} catch {'N/A'}
-            if (`$PID -eq 'N/A'){WriteNew-Eventlog -EventID 7002 -EntryType 'Error' -Message `$error[0]; continue}
-            Write-Log -message "PID found as `$PID"
+            `$MPID = try{Get-CimInstance -ClassName 'Win32_service' -Filter "Name LIKE '`$(`$Service.Name)'" -erroraction stop | Select-Object -ExpandProperty ProcessID} catch {'N/A'}
+            if (`$MPID -eq 'N/A'){WriteNew-Eventlog -EventID 7002 -EntryType 'Error' -Message `$error[0]; continue}
+            Write-Log -message "PID found as `$MPID"
             Write-Log -message 'Taskkilling process'
-            Taskkill /f /pid `$PID
+            Taskkill /f /pid `$MPID
             Write-Log -message 'Restarting process'
             start-service -Name `$service.Name
           }
@@ -212,7 +212,7 @@ $trigger = New-ScheduledTaskTrigger `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5) 
 $action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
-$Principal = New-ScheduledTaskPrincipal -UserId "LOCAL SERVICE" -LogonType ServiceAccount -RunLevel Highest
+$Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger -Principal $Principal -Settings $settings 
 try {Register-ScheduledTask ASG-Service-Monitor -InputObject $ST  -TaskPath asg -Force} catch {Write-Log -message 'Scheduled task already exists, or errored out'}
