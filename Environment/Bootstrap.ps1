@@ -5,12 +5,12 @@
             [Parameter(Mandatory=$False)][ValidateSet('Log','ERROR','Data')][String]$Type = 'Log'
         )
         Set-ExecutionPolicy Bypass -scope Process -Force
-        Set-Location -LiteralPath 'C:\ProgramData\ASG\Logs'
+        Set-Location -LiteralPath 'C:\ProgramData\ASG'
         $MyLogName = "$($MyInvocation.ScriptName)"
         $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
         $scriptLog = "$LogName.log"
         if (!(Test-Path -LiteralPath 'C:\ProgramData\ASG\Logs')) {
-            New-Item -ItemType Directory -Name .\Temp | Out-Null
+            New-Item -ItemType Directory -Name .\Logs | Out-Null
         }
         if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Logs\$scriptLog")) {
             New-Item -ItemType File -Name $scriptLog | Out-Null
