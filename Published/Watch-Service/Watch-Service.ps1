@@ -133,7 +133,9 @@ foreach (`$monitor in `$monitors){
         Write-Log -message "`$(`$service.Name) is running"
       }
     }
+    Write-Log -message "`$monitor Is not due - skipping"
   }
+  `$Monitor | Set-ItemProperty -Name LastRun -value `$(Get-date -format s) -Force
 }
 "@
 
