@@ -23,7 +23,7 @@
             $Lastrun = ((Get-Content $Scriptlogpath\$scriptLog) | Select-Object -Index 2).Split(' ')
             $lastruncomparor = ([datetime]$lastrun[0]).AddMinutes(30)
             If ($MyDate -gt $lastruncomparor) {
-                Add-Content -Path  "$Scriptlogpath\$scriptLog" -Value "----------------------------------------------"
+                Add-Content -Path  "$Scriptlogpath\$scriptLog" -Value "--------------------New Instance--------------------------"
                 Add-Content -Path "$Scriptlogpath\$scriptLog" -Value "$MyDate - $Type - $MyLogName"
             }
             Add-Content -Path "$Scriptlogpath\$scriptLog" -Value "$MyDate - $Type - $Message"
