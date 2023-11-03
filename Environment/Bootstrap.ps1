@@ -5,7 +5,7 @@
             [Parameter(Mandatory=$False)][ValidateSet('Log','ERROR','Data')][String]$Type = 'Log'
         )
         Set-ExecutionPolicy Bypass -scope Process -Force
-        Set-Location C:\Temp
+        Set-Location -LiteralPath 'C:\ProgramData\ASG\Logs'
         $MyLogName = "$($MyInvocation.ScriptName)"
         $LogName = (($MyLogName).Split('\')[$(($MyLogName).Split('\')).Count - 1]).Replace('.ps1','')
         $scriptLog = "$LogName.log"
