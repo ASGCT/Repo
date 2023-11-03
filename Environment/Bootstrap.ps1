@@ -13,7 +13,7 @@
             New-Item -ItemType Directory -Name .\Logs | Out-Null
         }
         if (!(Test-Path -LiteralPath "C:\ProgramData\ASG\Logs\$scriptLog")) {
-            New-Item -ItemType File -Name $scriptLog | Out-Null
+            New-Item -ItemType File -Path .\Logs -Name $scriptLog | Out-Null
             $MyDate = Get-Date -Format s
             Add-Content -Path "$scriptLog" -Value "----------------------------------------------"
             Add-Content -Path "$scriptLog" -Value "$MyDate - $Type - $MyLogName "
