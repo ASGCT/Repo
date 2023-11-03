@@ -1,28 +1,61 @@
-# Execute-RepoScript
+# Watch-Service
 
-Downloads and executes a repo script.
+This script will create registry in the following registry location
+    HKLM:\Software\asg\Internal-Monitor
+  These items will be in the following format
+    Key = Service Name
+      Property Interval = The interval to check the service.
+      Property LastRun = The last time it checked the service.
+
+  This script will create the following Powershell script.
+    C:\Programdata\asg\scripts\ServiceWatcher.ps1
+  
+  This script creates the following scheduled task
+    Task Scheduler (Local)
+      Task Scheduler Library
+        ASG
+          ASG-Service-Monitor
+
+  The ServiceWatcher script reads the registry and gathers all target Services
+    Then it loops through all services gathering their state and interval
+      If the service is not running it will attempt to start the service
+        If the service does not exist it creates an event log event id 7001 and moves on to the next service
+        If the service is not running
+          An attempt to restart service is made.
+            If the service can not be simply restarted an attempt to forcefully kill the process is made
+              If the service can not get the pid or kill the pid an event of 7002 will be thrown containing the error.
+            The service is then attempted to be restarted.
+          If the service is not started after that attempt an event log of 7003 will be thrown stating it could not start the service.
+          Moves on to the next service
+      Reports the service is running
+    If the service is not due to be monitored it is skipped and that skip is logged
+    Moves on to the next service
+    If the service was due 
+    logs the change to the registry for the last run time
+    Changes the lastRun registry value
+  
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Watch-Service.ps1 [-ServiceName] <String> [-Interval] <String> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Uses the computer itself to monitor it's own services - autofix's them if possible.
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Watch-Service.ps1 -ServiceName 'Windows Agent Service' -Interval 5
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+Monitors the 'Windows Agent Service' every 5 minutes
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+Watch-Service.ps1 -ServiceName 'SQLService' -Interval 20
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Monitors the 'SqlService' every 20 minutes.
