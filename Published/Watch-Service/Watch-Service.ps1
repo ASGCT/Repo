@@ -163,7 +163,7 @@ $trigger = New-ScheduledTaskTrigger `
     -Once `
     -At (Get-Date) `
     -RepetitionInterval (New-TimeSpan -Minutes 5)
-$action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-WindowStyle Hidden `"-File $filelocation\$Scriptfilename`""
+$action = New-ScheduledTaskAction -Execute "Powershell" -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$filelocation\$Scriptfilename`""
 $User= "LOCAL SERVICE"
 $settings = New-ScheduledTaskSettingsSet -Hidden -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable 
 $ST = New-ScheduledTask -Action $action -Trigger $trigger  -Settings $settings 
