@@ -132,8 +132,8 @@ function WriteNew-Eventlog {
   
   
 `$Monitors = Get-ChildItem -Path HKLM:\SOFTWARE\asg\Internal-Monitor\
-if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\Watch-Service.log').CreationTime -lt (Get-Date).AddDays(-1)){
-  Remove-Item -Path 'C:\ProgramData\ASG\Script-Logs\Watch-Service.log' -Force
+if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log').CreationTime -lt (Get-Date).AddDays(-1)){
+  Remove-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log' -Force
   }
 Write-log -message '---------------New Run-----------------' 
 foreach (`$monitor in `$monitors){
