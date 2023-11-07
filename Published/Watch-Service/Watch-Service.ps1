@@ -115,9 +115,11 @@ If (!(`$bootstraploaded)){
 }
   
 `$Monitors = Get-ChildItem -Path HKLM:\SOFTWARE\asg\Internal-Monitor\
-if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log').CreationTime -lt (Get-Date).AddDays(-1)){
-  Remove-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log' -Force
+if (Test-Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log') {
+  if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log').CreationTime -lt (Get-Date).AddDays(-1)){
+    Remove-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log' -Force
   }
+}
 Write-log -message '---------------New Run-----------------' 
 foreach (`$monitor in `$monitors){
     `$service = ''
