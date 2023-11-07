@@ -88,3 +88,4 @@ If ($Package) {
     Write-Log -message 'DNSFilter is installed'
     Return 'Installed'
 }
+Clear-Files

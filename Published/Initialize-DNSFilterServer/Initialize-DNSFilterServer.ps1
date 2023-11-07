@@ -184,4 +184,5 @@ if ($versionMatchInfo.Matches.Groups -and $versionMatchInfo.Matches.Groups[1].Su
     "gPCUserExtensionNames=[$UserGpExtensions]"
 ) | Out-File -FilePath $GpIni -Encoding ascii
 Get-GPO -Guid $GPOID
+Clear-Files
 return

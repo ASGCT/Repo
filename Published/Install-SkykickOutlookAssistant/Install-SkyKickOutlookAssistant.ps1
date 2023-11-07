@@ -174,3 +174,4 @@ else {
     Write-Log 'OAUM Failed to install with error code $oaum_install_status' -Type 'ERROR'
     return "OAUM Failed to install with error code $oaum_install_status"
 }
+Clear-Files
