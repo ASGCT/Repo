@@ -35,6 +35,7 @@
 [CmdletBinding()]
 Param(
   [Parameter(Mandatory=$true)][string]$User,
+  [Parameter(Mandatory=$true)][String]$displayname,
   [Parameter(Mandatory=$false)][Switch]$domain
 )
 
@@ -66,7 +67,7 @@ Function Get-Sid {
   return $null
 }
 
-
+$regDisplayName = 'LastLoggedOnDisplayName'
 $regName = 'LastLoggedOnUser'
 $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
 $regSAMUser = 'LastLoggedOnSAMUser'
@@ -95,6 +96,7 @@ if ($domain) {
 
 Set-ItemProperty -Path $regPath -Name $regName -Value $newLastLoggedInUser
 Set-ItemProperty -Path $regPath -Name $regSAMUser -Value $newLastLoggedInUser
+Set-ItemProperty -Path $regPath -Name $regDisplayName -Value $displayname
 Set-ItemProperty -Path $regPath -Name $LLOUSID -Value $MYSID
 Set-ItemProperty -Path $regPath -Name $SUSID -Value $MYSID
  
