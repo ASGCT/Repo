@@ -67,7 +67,7 @@ Function Get-Sid {
 }
 
 
-
+$regName = 'LastLoggedOnUser'
 $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
 $regSAMUser = 'LastLoggedOnSAMUser'
 $LLOUSID = 'LastLoggedOnUser'
