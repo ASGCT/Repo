@@ -94,6 +94,7 @@ if ($domain) {
 }  
 
 Set-ItemProperty -Path $regPath -Name $regSAMUser -Value $newLastLoggedInUser
+Set-ItemProperty -Path $regPath -Name $regSAMUser -Value $newLastLoggedInUser
 Set-ItemProperty -Path $regPath -Name $LLOUSID -Value $MYSID
 Set-ItemProperty -Path $regPath -Name $SUSID -Value $MYSID
  
