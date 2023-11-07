@@ -70,7 +70,7 @@ Function Get-Sid {
 $regName = 'LastLoggedOnUser'
 $regPath = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
 $regSAMUser = 'LastLoggedOnSAMUser'
-$LLOUSID = 'LastLoggedOnUser'
+$LLOUSID = 'LastLoggedOnUserSID'
 $SUSID = 'SelectedUserSID'
 
 if (-not (Test-Path $regPath)) {
