@@ -113,23 +113,6 @@ If (!(`$bootstraploaded)){
   `$scriptblock = [scriptblock]::Create(`$BaseRepoUrl)
   Invoke-Command -ScriptBlock `$scriptblock
 }
-
-
-function WriteNew-Eventlog {
-  param(
-      [Parameter(Mandatory=`$True)][Int32]`$EventID,
-      [Parameter(Mandatory=`$false)][string]`$EntryType = 'Information',
-      [Parameter(Mandatory=`$true)][string]`$Message,
-      [Parameter(Mandatory=`$false)][Int32]`$Category,
-      [Parameter(Mandatory=`$False)][Int32[]]`$RawData = (10,20)
-  )
-  
-      `$source = 'ASG-Monitoring'
-      New-eventlog -Source `$source -LogName Application -ErrorAction SilentlyContinue
-      Write-EventLog -LogName Application -Source `$source -eventid `$EventID -EntryType `$EntryType -message `$Message -Category `$Category -RawData `$RawData
-      return
-  }
-  
   
 `$Monitors = Get-ChildItem -Path HKLM:\SOFTWARE\asg\Internal-Monitor\
 if ((Get-Item -Path 'C:\ProgramData\ASG\Script-Logs\ServiceWatcher.log').CreationTime -lt (Get-Date).AddDays(-1)){
@@ -171,6 +154,7 @@ foreach (`$monitor in `$monitors){
           WriteNew-Eventlog -EventID 7003 -EntryType 'ERROR' -Message "Could not start `$(`$Service.name) after stopped state"
         }else {
           Write-Log -message "Successfully restarted `$(`$Service.name)"
+          WriteNew-Eventlog -EventID 7010 -EntryType 'Information' -Message "Sucessfully Restarted `$(`$Service.name) after stopped state"
         }
       } else {
         Write-Log -message "`$(`$service.Name) is running"
