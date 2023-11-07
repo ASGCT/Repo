@@ -7,6 +7,9 @@
   
   .PARAMETER User
   The Username of the user to set ie. ccalverley
+  
+  .PARAMETER DisplayName
+  The DisplayName of the user to set ie. 'Chris Calverley' or comparible display name.
 
   .PARAMETER Domain
   Toggles the difference between a local and domain account
