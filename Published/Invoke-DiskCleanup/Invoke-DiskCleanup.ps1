@@ -126,4 +126,5 @@ Write-log -Message 'After action Drive Stats' -Type Log
 Write-Log -Message "Free Space Available after cleanup: $([Math]::round(($Postdrive.free /1GB),2)) GB"
 Write-log -message "A total of $(($Postdrive.free - $drive.free) /1MB) MB has been gained."
 Write-Log -Message "Total Percentage Free after cleanup: $PostPercFree %" -type Log
+WriteNew-Eventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed Successfully"
 Clear-Files
