@@ -39,11 +39,11 @@
 
     function WriteNew-Eventlog {
         param(
-            [Parameter(Mandatory=`$True)][Int32]$EventID,
-            [Parameter(Mandatory=`$false)][string]$EntryType = 'Information',
-            [Parameter(Mandatory=`$true)][string]$Message,
-            [Parameter(Mandatory=`$false)][Int32]$Category,
-            [Parameter(Mandatory=`$False)][Int32[]]$RawData = (10,20)
+            [Parameter(Mandatory=$True)][Int32]$EventID,
+            [Parameter(Mandatory=$false)][string]$EntryType = 'Information',
+            [Parameter(Mandatory=$true)][string]$Message,
+            [Parameter(Mandatory=$false)][Int32]$Category,
+            [Parameter(Mandatory=$False)][Int32[]]$RawData = (10,20)
         )
         
             $source = 'ASG-Monitoring'
