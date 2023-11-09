@@ -1366,7 +1366,8 @@ Function Sync-SqlServerConfiguration {
 }
 
 Write-Log -Message 'Asserting ITGlue Module is installed and loaded'
-Install-Module Nuget -Force
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module Nuget -Confirm:$false -Force
 Import-ApiGlueModule
 
 $APIEndpoint = 'https://api.itglue.com'
