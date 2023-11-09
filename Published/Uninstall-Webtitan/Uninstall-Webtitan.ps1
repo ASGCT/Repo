@@ -64,6 +64,9 @@ Foreach ($CurrentDNSForwarder in $CurrentDNSForwarders) {
 Write-Log -message 'Getting WebTitan uninstall string'
 $UID = get-Webtitan
 
+Get-Package $Name -ErrorAction Stop | Uninstall-Package -force -ErrorAction Stop
+
+
 If (!($UID)) {
     Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME."
     Clear-Files
