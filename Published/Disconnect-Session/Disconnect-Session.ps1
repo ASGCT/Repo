@@ -109,10 +109,10 @@ if ($users -eq 'All') {
     $verifySessions = get-session
     Write-log -Message "Verifying $User is logged out"
     if (!($verifySessions | Where-Object {$_.UserName -eq $user})) {
-      WriteNew-Eventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Logged off $User Successfully"
+      Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Logged off $User Successfully"
       Write-log -Message 'Success'
     } else {
-      WriteNew-Eventlog -eventid 7004 -EntryType 'ERROR' -message "$($MyInvocation.ScriptName) Could not Logged off $User"
+      Write-NewEventlog -eventid 7004 -EntryType 'ERROR' -message "$($MyInvocation.ScriptName) Could not Logged off $User"
       Write-Log -Message 'Failure' -Type ERROR
     }
 

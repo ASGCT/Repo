@@ -134,7 +134,7 @@ foreach (`$monitor in `$monitors){
       #need to try next line and error out if service isn't found make a event log
       `$service = try {Get-service -Name `$monitor.PSChildName -ErrorAction stop} Catch {"Service `$(`$Service.name) does not exist"}
       If (`$service -eq "Service `$(`$monitor.PSChildName) does not exist") {
-        WriteNew-Eventlog -EventID 7001 -EntryType 'Error' -Message `$service
+        Write-NewEventlog -EventID 7001 -EntryType 'Error' -Message `$service
         Continue
       } else {
         Write-Log -message "`$(`$Service.name) is in `$(`$Service.Status) state"
@@ -144,7 +144,7 @@ foreach (`$monitor in `$monitors){
           Catch {
             Write-Log -message "Forcefully killing `$service"
             `$MPID = try{Get-CimInstance -ClassName 'Win32_service' -Filter "Name LIKE '`$(`$Service.Name)'" -erroraction stop | Select-Object -ExpandProperty ProcessID} catch {'N/A'}
-            if (`$MPID -eq 'N/A'){WriteNew-Eventlog -EventID 7002 -EntryType 'Error' -Message `$error[0]; continue}
+            if (`$MPID -eq 'N/A'){Write-NewEventlog -EventID 7002 -EntryType 'Error' -Message `$error[0]; continue}
             Write-Log -message "PID found as `$MPID"
             Write-Log -message 'Taskkilling process'
             Taskkill /f /pid `$MPID
@@ -153,10 +153,10 @@ foreach (`$monitor in `$monitors){
           }
         if ((Get-service `$Service.name).Status -notin ('Running', 'StartPending')){
           Write-Log -message "Could not start `$(`$Service.name)"
-          WriteNew-Eventlog -EventID 7003 -EntryType 'ERROR' -Message "Could not start `$(`$Service.name) after stopped state"
+          Write-NewEventlog -EventID 7003 -EntryType 'ERROR' -Message "Could not start `$(`$Service.name) after stopped state"
         }else {
           Write-Log -message "Successfully restarted `$(`$Service.name)"
-          WriteNew-Eventlog -EventID 7010 -EntryType 'Information' -Message "Sucessfully Restarted `$(`$Service.name) after stopped state"
+          Write-NewEventlog -EventID 7010 -EntryType 'Information' -Message "Sucessfully Restarted `$(`$Service.name) after stopped state"
         }
       } else {
         Write-Log -message "`$(`$service.Name) is running"

@@ -50,7 +50,7 @@ $Package = Get-Package 'DNSFilterAgent' -ErrorAction SilentlyContinue
 
 If ($Package) {
     Write-Log -message 'DNSFilter is installed'
-    WriteNew-Eventlog -eventid 7005 -EntryType 'Error' -message "$($MyInvocation.ScriptName) Stopped because DNSFilter is already Installed"
+    Write-NewEventlog -eventid 7005 -EntryType 'Error' -message "$($MyInvocation.ScriptName) Stopped because DNSFilter is already Installed"
     Return 'Already Installed'
 }
 
@@ -87,12 +87,12 @@ $Package = Get-Package 'DNSFilterAgent' -ErrorAction SilentlyContinue
 
 If ($Package) {
     Write-Log -message 'DNSFilter is installed'
-    WriteNew-Eventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed Successfully"
+    Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed Successfully"
     Clear-Files
     Return 'Installed'
 } else {
     Write-Log -message 'DNSFilter Could not be installed' -type ERROR
-    WriteNew-Eventlog -eventid 7005 -message "$($MyInvocation.ScriptName) Could not install DNSFilter"
+    Write-NewEventlog -eventid 7005 -message "$($MyInvocation.ScriptName) Could not install DNSFilter"
     Clear-Files
     Return 'Failed'
 }
