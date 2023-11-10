@@ -133,7 +133,7 @@ If(!(Test-Path "$(get-smbshare | Where-Object Name -like 'NetLogon' | Select-Obj
 $GPOName = 'DNSFilterDeployment'
 
 #Create the gpo
-New-GPO -Name $GPOName | Set-GPPermissions -PermissionLevel gpoedit -TargetName "$(get-adgroup -filter 'Name -like "admin*"' | Select-Object -ExpandProperty Name)" -TargetType Group
+New-GPO -Name $GPOName | Set-GPPermissions -PermissionLevel gpoedit -TargetName "$(get-adgroup -filter 'Name -like "Administrators"' | Select-Object -ExpandProperty Name)" -TargetType Group
 #Scope to only domain computers
 Set-GPPermission -Name $GPOName -PermissionLevel GpoApply -TargetName 'Domain Computers' -TargetType Group -Replace
 $GPOID = Get-Gpo -all | Where-object DisplayName -match "$GPOName" | Select-object -expandProperty ID | Select-object -expandProperty GUID 
