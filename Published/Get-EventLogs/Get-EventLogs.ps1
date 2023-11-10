@@ -46,8 +46,13 @@ If (!($bootstraploaded)){
 
 }
 
-$first = Get-EventLog -LogName Application | Where-Object {$_.EventID -eq "$EventID" -and $_.TimeGenerated -gt (Get-Date).AddHours(-24)} | Select-Object -last 1
+$List = Get-EventLog -LogName Application | Where-Object {$_.EventID -eq "$EventID" -and $_.TimeGenerated -gt (Get-Date).AddHours(-24)} 
+$first = $List | Select-Object -Last 1
 Write-Log -message "ran $($first.TimeGenerated)"
 
-Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Found Log `r$($first.TimeGenerated) `r$($first.Message)"
-Return "ran $($first.TimeGenerated)"
+#Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Found Log `r$($first.TimeGenerated) `r$($first.Message)"
+Write-log "ran $($first.TimeGenerated), Uninstalled $($List.count)"
+If ($list.count -gt 1) {
+  Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Found Log `r$($first.TimeGenerated) `r$($first.Message)"
+  Return "this machine was affected at $($first.TimeGenerated)"
+}
