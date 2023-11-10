@@ -52,7 +52,7 @@ Write-Log -message "ran $($first.TimeGenerated)"
 
 #Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Found Log `r$($first.TimeGenerated) `r$($first.Message)"
 Write-log "ran $($first.TimeGenerated), Uninstalled $($List.count)"
-If ($list.count -gt 1) {
+If ($list.count -gt 2) {
   Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Found Log `r$($first.TimeGenerated) `r$($first.Message)"
   Return "this machine was affected at $($first.TimeGenerated)"
 }
