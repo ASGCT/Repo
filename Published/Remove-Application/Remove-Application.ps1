@@ -1,33 +1,29 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Uninstalls an application from a computer
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Uninstalls the desired application from a computer
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER Name
+  The name of the application as it appears in programs and features
 
   .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  Application Name 
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\SciptLogs\Remove-Application.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
-
-  .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Remove-Application.ps1 -Name 'DNSFilter Agent
+  Uninstalls DNSFilter from a machine
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  November 10, 2023
   For
   ASGCT
 #>
@@ -56,6 +52,7 @@ Function Get-Application {
   }
 
 }
+
 Write-Log "Attempting to remove $Name"
 try {
   Write-log -message "attempting package removal of $Name"
@@ -77,6 +74,8 @@ $UID = Get-Application
 Write-log -message "attempting package removal of $Name with Ciminstance"
 try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
 Catch {Write-Log "Could not find Ciminstance for $Name"}
+Start-Sleep -Seconds 20
+#verify
 $UID = Get-Application 
 If (!($UID)) {
   Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
