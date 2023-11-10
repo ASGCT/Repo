@@ -50,6 +50,6 @@
             New-eventlog -Source $source -LogName Application -ErrorAction SilentlyContinue
             Write-EventLog -LogName Application -Source $source -eventid $EventID -EntryType $EntryType -message $Message -Category $Category -RawData $RawData
             return
-        }
+    }
 
     $Global:bootstraploaded = $true
