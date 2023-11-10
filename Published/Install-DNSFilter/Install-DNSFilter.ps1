@@ -82,7 +82,7 @@ Write-Log -Message "Installing"
 msiexec.exe /qn /i "C:\Temp\$BaseName\$FileName" NKEY="$SiteKey"
 
 Write-Log -Message "Verifying..."
-
+Start-Sleep -Seconds 20
 $Package = Get-Package 'DNSFilterAgent' -ErrorAction SilentlyContinue
 
 If ($Package) {
