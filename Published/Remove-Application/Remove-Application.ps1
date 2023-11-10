@@ -69,6 +69,7 @@ $Switches = ' /S'
 $UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+    Write-NewEventlog -eventid 7011 -message "$($MyInvocation.ScriptName) Could Not Verify $Name is installed"
     Clear-Files
     Return "Success - $Name is not installed."
   }
@@ -79,6 +80,7 @@ Catch {Write-Log "Could not find Ciminstance for $Name"}
 $UID = Get-Application 
 If (!($UID)) {
   Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
+  Write-NewEventlog -eventid 7011 -message "$($MyInvocation.ScriptName) Could Not Verify $Name is installed"
   Clear-Files
   Return "Success - $Name is not installed."
 }
@@ -99,6 +101,7 @@ Write-Log -Message "UID uninstall string is $UID"
   If (!($UID)) {
     Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
     Clear-Files
+    Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed removing $Name Successfully"
     Return "Success - $Name is not installed."
   }
 
@@ -115,10 +118,12 @@ $UID = Get-Application
   If (!($UID)) {
     Write-Log -Message "Success - $Name has been removed from $env:COMPUTERNAME"
     Clear-Files
+    Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed removing $Name Successfully"
     Return "Success - $Name has been removed from $env:COMPUTERNAME"
 
 } else {
     Write-log -message "Can not guarantee that $Name was removed please review" -Type ERROR
     Clear-Files
+    Write-NewEventlog -eventid 7005 -message "$($MyInvocation.ScriptName) Could not verify removal of $Name"
     Return "$Name may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Application.log"
 }
