@@ -37,7 +37,7 @@
         }
     }
 
-    function Write-NewEventlog {
+    function global:Write-NewEventlog {
         param(
             [Parameter(Mandatory=$True)][Int32]$EventID,
             [Parameter(Mandatory=$false)][string]$EntryType = 'Information',
