@@ -80,7 +80,7 @@ Catch {Write-Log "Could not find Ciminstance for $Name"}
 $UID = Get-Application 
 If (!($UID)) {
   Write-Log -Message "It does not appear that $Name is installed on $env:COMPUTERNAME."
-  Write-NewEventlog -eventid 7011 -message "$($MyInvocation.ScriptName) Could Not Verify $Name is installed"
+  Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) removed $Name via line 78"
   Clear-Files
   Return "Success - $Name is not installed."
 }
