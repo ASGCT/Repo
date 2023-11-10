@@ -1396,7 +1396,12 @@ Foreach ($syncitem in $syncitems) {
     'Network Overview' {Write-log -message 'Network Overview sync';Sync-NetworkOverview -OrgID $OrgID}
     'Server Overview' {Write-log -message 'Server Overview sync';Sync-ServerOverview -OrgID $OrgID}
     'SQL Server Configuration' {Write-log -message 'SQL Server Configuration sync';Sync-SqlServerConfiguration -OrgID $OrgID}
-    default {Clear-Files;return 'Unhandled Exception'}
+    default {
+      Clear-Files
+      Write-NewEventlog -EventID 7005 -EntryType 'ERROR' -Message "$($MyInvocation.ScriptName) Unhandled Exception"
+      return 'Unhandled Exception'
+    }
   }
 }
+Write-NewEventlog -EventID 7010 -EntryType 'Information' -Message "$($MyInvocation.ScriptName) Completed Successfully"
 Clear-Files
