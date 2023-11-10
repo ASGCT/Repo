@@ -1,33 +1,24 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Saves a log of last Non-idle actions on a computer
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  This script will determine if a user had moved the mouse or touched a key and tell you how long it has been since this has happened.
+  This should be a scheduled - re-ocurring task in the rmm.
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
-
-  .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
-
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\ScriptLogs\Save-ActivityReport.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
-
-  .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Save-ActivityReport.ps1 
+  Saves the log file to the appropriate container for review
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  November 10, 2023
   For
   ASGCT
 #>
@@ -99,3 +90,5 @@ for ( $i = 0; $i -lt 10; $i++ ) {
     Write-Log -message ("^<-End Result-^>")
     Start-Sleep -Seconds (Get-Random -Minimum 1 -Maximum 10)
 }
+Write-NewEventlog -EventID 7010 -EntryType 'Information' -Message "Sucessfully Ran $($MyInvocation.ScriptName)"
+Clear-Files
