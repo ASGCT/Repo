@@ -72,7 +72,7 @@ $UID = Get-Application
   }
 
 Write-log -message "attempting package removal of $Name with Ciminstance"
-try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -like "*$Name*"} -ErrorAction Stop).Uninstall()}
+try {(Get-CimInstance -ClassName win32_Product | Where-Object {$_.Name -eq "$Name"} -ErrorAction Stop).Uninstall()}
 Catch {Write-Log "Could not find Ciminstance for $Name"}
 Start-Sleep -Seconds 20
 #verify
