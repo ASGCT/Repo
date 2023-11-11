@@ -71,24 +71,25 @@ If (!($UID)) {
     Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME."
     Clear-Files
     Return 'Success - Webtitan is not installed.'
-}
-
-Write-Log -message "WebTitan Uninstall string found to be: $UID "
-
-Write-Log -message 'Uninstalling Webtitan'
-$UID = $uid.replace("MsiExec.exe /I","")
-
-$result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
-Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
-
-$UID = get-Webtitan
-If (!($UID)) {
-    Write-Log -Message "Success - WebTitan has been removed from $env:COMPUTERNAME"
-    Clear-Files
-    Return "Success - WebTitan has been removed from $env:COMPUTERNAME"
-
 } else {
-    Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
-    Clear-Files
-    Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
+
+    Write-Log -message "WebTitan Uninstall string found to be: $UID "
+
+    Write-Log -message 'Uninstalling Webtitan'
+    $UID = $uid.replace("MsiExec.exe /I","")
+
+    $result = (Start-process -FilePath msiexec.exe -argumentList "/X ""$UID"" /qn" -Wait).ExitCode
+    Write-log -message "Uninstall of WebTitan resulted in exit code: $result"
+
+    $UID = get-Webtitan
+    If (!($UID)) {
+        Write-Log -Message "Success - WebTitan has been removed from $env:COMPUTERNAME"
+        Clear-Files
+        Return "Success - WebTitan has been removed from $env:COMPUTERNAME"
+
+    } else {
+        Write-log -message "Can not guarantee that WebTitan was removed please review" -Type ERROR
+        Clear-Files
+        Return "WebTitan may still be installed please review $env:COMPUTERNAME and check file located in C:\Temp\Uninstall-Webtitan.log"
+    }
 }
