@@ -85,7 +85,7 @@ If (!($UID)) {
 }
 
 
-$uninstallstring = get-package *$Name* -ErrorAction SilentlyContinue | ForEach-Object { $_.metadata['uninstallstring'] }
+$uninstallstring = get-package -name "$Name" -ErrorAction SilentlyContinue | ForEach-Object { $_.metadata['uninstallstring'] }
 Write-Log -message "uninstall string $uninstallstring"
 
 $isExeOnly = Test-Path -ErrorAction SilentlyContinue -LiteralPath $uninstallString
