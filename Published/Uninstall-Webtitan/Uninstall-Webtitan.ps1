@@ -66,6 +66,8 @@ Write-Log -message 'Getting WebTitan uninstall string'
 
 Get-Package 'WebTitan Cloud OTG' -ErrorAction SilentlyContinue | Uninstall-Package -force -ErrorAction SilentlyContinue
 
+
+
 <#
 If (!($UID)) {
     Write-Log -Message "It does not appear that WebTitan is installed on $env:COMPUTERNAME."
