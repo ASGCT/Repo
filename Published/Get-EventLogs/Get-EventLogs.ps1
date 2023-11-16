@@ -42,13 +42,13 @@
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
   
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
-  Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
+  Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
-  Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
+  Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .NOTES
