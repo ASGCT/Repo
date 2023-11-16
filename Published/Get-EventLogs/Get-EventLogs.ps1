@@ -32,22 +32,22 @@
   C:\ProgramDat\ASG\Script-Logs\Get-EventLogs.Log 
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -EventSource Application
+  PS> .\Get-EventLogs.ps1 -LogSource Application
   Exports all application logs that have occurred in the past 24 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -EventSource Application -EventID 7010 -ThresholdHours 72
+  PS> .\Get-EventLogs.ps1 -LogSource Application -EventID 7010 -ThresholdHours 72
   Exports all application event logs with an id of 7010 that have occurred in the past 72 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
   
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -EventSource Security -EventType 'Audit Failure' -ThresholdHours 36
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
   Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -EventSource Security -EventType 'Audit Failure' -ThresholdHours 36
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
   Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
