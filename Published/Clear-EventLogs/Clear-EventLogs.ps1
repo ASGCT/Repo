@@ -83,14 +83,14 @@ If (!(Test-Path $Logfilelocation)) {
 
 Foreach ($log in $logs) {
   Write-log -message "Retrieving log: $Log"
-  $filename = "$($(Get-Date).ToString('yyyyMMdd'))-$log.xml"
+  $filename = "$($(Get-Date).ToString('yyyyMMdd'))-$log.csv"
   Get-EventLog $Log | Tee-Object -Variable logdata
   Write-log -message "Clearing log: $Log"
   Clear-EventLog -logname $log -confirm
   Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Cleared $log Successfully"
   if ($Archive) {
     Write-log -message "Archiving log: $log to $Logfilelocation\\$filename"
-    $logdata | Export-Clixml -Path "$Logfilelocation\\$filename"
+    $logdata | Export-csv -Path "$Logfilelocation\\$filename"
 
     Write-log -message "Applying retention setting of $RetentionDays days to $Logfilelocation"
     $Strings = Get-ChildItem $Logfilelocation -File
