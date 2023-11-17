@@ -126,9 +126,7 @@ elseif (!($EventID) -and !($EntryType) -and $KeyWord) {
 
 If ($list.count -gt 0) {
   $Loglocation = 'C:\ProgramData\ASG\DataFiles'
-  $ScriptName = "$($MyInvocation.ScriptName)"
-  $ForScriptName = (($ScriptName).Split('\')[$(($ScriptName).Split('\')).Count - 1]).Replace('.ps1','')
-  $FileName = "$ForScriptName.CSV"
+  $FileName = "EventLogExport.CSV"
   $first = $List | Select-Object -Last 1
   $last = $list | Select-Object -First 1
   Write-Log -message "Found eventID $($first.EventID) first at : $($first.TimeGenerated)"
