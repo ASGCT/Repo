@@ -136,13 +136,13 @@ If ($list.count -gt 0) {
   Write-log -message "The last event of eventID $($last.EventID) message body : `r$($Last.Message)"
   write-log -message "Exporting query to $loglocation"
   if (!(Test-Path -LiteralPath $Loglocation)) {
-    New-item -LiteralPath $loglocation -ItemType Directory -Force
+    New-item -Path $loglocation -ItemType Directory -Force
   }
   if (Test-Path -LiteralPath "$loglocation\$fileName" ) {
     if (Test-Path -LiteralPath "$loglocation\$fileName.bak") {
-      remove-item -LiteralPath "$loglocation\$fileName.bak" -Force
+      remove-item -Path "$loglocation\$fileName.bak" -Force
     }
-    rename-item -LiteralPath "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
+    rename-item -Path "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
   }
   $list | Export-Csv -LiteralPath $Loglocation\$FileName
   return "Found eventID $($first.EventID) first at : $($first.TimeGenerated) `rTotal events: $($list.count)`rThe last event of eventID $($first.EventID) was found at : $($Last.TimeGenerated)`rThe last event of eventID $($last.EventID) message body : `r$($Last.Message)"
