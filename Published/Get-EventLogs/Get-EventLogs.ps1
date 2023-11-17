@@ -145,8 +145,10 @@ If ($list.count -gt 0) {
     rename-item -Path "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
   }
   $list | Export-Csv -LiteralPath $Loglocation\$FileName
+  Clear-Files
   return "Found eventID $($first.EventID) first at : $($first.TimeGenerated) `rTotal events: $($list.count)`rThe last event of eventID $($first.EventID) was found at : $($Last.TimeGenerated)`rThe last event of eventID $($last.EventID) message body : `r$($Last.Message)"
 } else {
   Write-log -message 'No events for the query provided were found'
+  Clear-Files
   throw 'No events for the query provided were found'
 }
