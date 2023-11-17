@@ -42,13 +42,13 @@
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
   
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
-  Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
+  Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EventType 'Audit Failure' -ThresholdHours 36
-  Exports all Security event logs with an event type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
+  Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .NOTES
@@ -136,13 +136,13 @@ If ($list.count -gt 0) {
   Write-log -message "The last event of eventID $($last.EventID) message body : `r$($Last.Message)"
   write-log -message "Exporting query to $loglocation"
   if (!(Test-Path -LiteralPath $Loglocation)) {
-    New-item -LiteralPath $loglocation -ItemType Directory -Force
+    New-item -Path $loglocation -ItemType Directory -Force
   }
   if (Test-Path -LiteralPath "$loglocation\$fileName" ) {
     if (Test-Path -LiteralPath "$loglocation\$fileName.bak") {
-      remove-item -LiteralPath "$loglocation\$fileName.bak" -Force
+      remove-item -Path "$loglocation\$fileName.bak" -Force
     }
-    rename-item -LiteralPath "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
+    rename-item -Path "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
   }
   $list | Export-Csv -LiteralPath $Loglocation\$FileName
   return "Found eventID $($first.EventID) first at : $($first.TimeGenerated) `rTotal events: $($list.count)`rThe last event of eventID $($first.EventID) was found at : $($Last.TimeGenerated)`rThe last event of eventID $($last.EventID) message body : `r$($Last.Message)"
