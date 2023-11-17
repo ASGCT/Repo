@@ -123,11 +123,12 @@ elseif (!($EventID) -and !($EntryType) -and $KeyWord) {
   Write-log -message "Getting all Events with the word $KeyWord in the Message within the last $thresholdhours hours"
   $List = Get-EventLog -LogName $LogSource | Where-Object {$_.Message -Like "*$KeyWord*" -and $_.TimeGenerated -gt (Get-Date).AddHours(-$thresholdhours) }
 }
-$Loglocation = 'C:\ProgramData\ASG\DataFiles'
-$ScriptName = "$($MyInvocation.ScriptName)"
-$ForScriptName = (($ScriptName).Split('\')[$(($ScriptName).Split('\')).Count - 1]).Replace('.ps1','')
-$FileName = "$ForScriptName.CSV"
+
 If ($list.count -gt 0) {
+  $Loglocation = 'C:\ProgramData\ASG\DataFiles'
+  $ScriptName = "$($MyInvocation.ScriptName)"
+  $ForScriptName = (($ScriptName).Split('\')[$(($ScriptName).Split('\')).Count - 1]).Replace('.ps1','')
+  $FileName = "$ForScriptName.CSV"
   $first = $List | Select-Object -Last 1
   $last = $list | Select-Object -First 1
   Write-Log -message "Found eventID $($first.EventID) first at : $($first.TimeGenerated)"
@@ -144,7 +145,7 @@ If ($list.count -gt 0) {
     }
     rename-item -Path "$loglocation\$fileName" -NewName "$loglocation\$fileName.bak"
   }
-  $list | Export-Csv -LiteralPath $Loglocation\$FileName
+  $list | Export-Csv -Path "$Loglocation\$FileName"
   Clear-Files
   return "Found eventID $($first.EventID) first at : $($first.TimeGenerated) `rTotal events: $($list.count)`rThe last event of eventID $($first.EventID) was found at : $($Last.TimeGenerated)`rThe last event of eventID $($last.EventID) message body : `r$($Last.Message)"
 } else {
