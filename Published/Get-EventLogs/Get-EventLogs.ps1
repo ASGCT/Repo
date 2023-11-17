@@ -14,7 +14,7 @@
   Specify the event ID you wish to query if desired.
 
   .PARAMETER EntryType
-  Specify the type of log you wish to query from 'Information', 'Error', 'Warning', 'Critical', 'Audit Failure', 'Audit Success'
+  Specify the type of log you wish to query from 'Information', 'Error', 'Warning', 'Critical', 'FailureAudit', 'SuccessAudit'
 
   .PARAMETER Keyword
   Specify a keyword or words you wish to query in the message text. The words must be found in the message body in exactly that order if using multiple words.
@@ -42,13 +42,13 @@
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
   
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'FailureAudit' -ThresholdHours 36
   Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .EXAMPLE
-  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'Audit Failure' -ThresholdHours 36
-  Exports all Security event logs with an entry type of Audit Failure that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
+  PS> .\Get-EventLogs.ps1 -LogSource Security -EntryType 'SuccessAudit' -ThresholdHours 36
+  Exports all Security event logs with an entry type of Audit Success that have occurred in the past 36 hours to c:\programdata\asg\Datafiles\Get-Eventlogs.csv  
   Returns the first found log time, the last found log time, the total amount of logs of that type, and the message content of the last found log.
 
   .NOTES
@@ -69,7 +69,7 @@ Param(
   [int]$EventID = $null,
 
   [Parameter(Mandatory = $false, HelpMessage = 'The level in Application, setup, and system, the keyword in Security',Position = 2)]
-  [ValidateSet ('Information', 'Error', 'Warning', 'Critical', 'Audit Failure', 'Audit Success')]
+  [ValidateSet ('Information', 'Error', 'Warning', 'Critical', 'FailureAudit', 'SuccessAudit')]
   [string]$EntryType = $null,
 
 
