@@ -47,14 +47,18 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-
+$snames = @()
 
 If(!($ServiceNames)){
-  $ServiceNames = Get-CimInstance -ClassName Win32_Service -Filter "StartName = '$LogonAs'"| Select-Object -Property *
+  $SNames = Get-CimInstance -ClassName Win32_Service -Filter "StartName = '$LogonAs'"| Select-Object -Property *
+} else {
+  Foreach ($Name in $ServiceNames){
+  $sNames += Get-CimInstance -ClassName Win32_Service -Filter "Name = '$ServiceNames'"| Select-Object -Property *
+  }
 }
 Write-log -message 'WARNING - We are about to change service credentials.' -type log
 
-foreach ($service in $ServiceNames) {
+foreach ($service in $SNames) {
   Write-log -message "Modifying $($service.name)'s credentials"
   $service.Change($null,$null,$null,$null,$null,$null,$LogonAs,$Password)
 }
