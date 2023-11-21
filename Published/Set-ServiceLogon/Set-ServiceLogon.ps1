@@ -18,20 +18,25 @@
   .OUTPUTS
   System.String
   C:\ProgramData\ASG\Script-Logs\Set-ServiceLogon.log  
+  Event viewer source ASG-Monitoring
+  Event IDs 
+    7001 = services with specified credentials were not found.
+    7002 = the return result of the service credential change was something other than 0
+    7010 = Successful change of credentials for the service.
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
+  PS> .\Set-ServiceLogon.ps1 -LogonAs 'WAD\tech.support' -Password [Secure.String]
+  Checks for all services where the logonas name is set to 'WAD\tech.support' and sets the credentials to the new password.
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Set-ServiceLogon.ps1 -LogonAs 'WAD\tech.support' -Password [Secure.String] -ServiceNames 'testservice','testservice1'
+  Sets 'testservice' and 'testservice1' logon credentials to the logonas name and password.
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  November 21, 2023
   For
   ASGCT
 #>
@@ -64,7 +69,7 @@ Write-log -message 'WARNING - We are about to change service credentials.' -type
 
 if (!($snames)) {
   Write-log -message "No services were found using $LogonAs for credential validation" -type Log
-  Write-NewEventlog -EventID 7002 -EntryType 'Error' -Message "$LogonAS credentials could not found on any service, please verify you are inputting the proper login name with domain using $($MyInvocation.ScriptName)"
+  Write-NewEventlog -EventID 7001 -EntryType 'Error' -Message "$LogonAS credentials could not found on any service, please verify you are inputting the proper login name with domain using $($MyInvocation.ScriptName)"
   clear-files
   throw "No services were found using $LogonAs for credential validation"
 }
