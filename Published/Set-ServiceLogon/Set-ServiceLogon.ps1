@@ -50,17 +50,17 @@ If (!($bootstraploaded)){
 $snames = @()
 
 If(!($ServiceNames)){
-  $SNames += get-wmiobject -Class Win32_Service -Filter "StartName = '$LogonAs'"| Select-Object -Property *
+  $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$LogonAs'"
 } else {
   Foreach ($Name in $ServiceNames){
-  $sNames += get-wmiobject -Class Win32_Service -Filter "Name = '$ServiceNames'"| Select-Object -Property *
+  $sNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "Name = '$ServiceNames'"
   }
 }
 Write-log -message 'WARNING - We are about to change service credentials.' -type log
 
 foreach ($service in $SNames) {
   Write-log -message "Modifying $($service.name)'s credentials"
-  $service.Change($null,$null,$null,$null,$null,$null,$LogonAs,$Password)
+  $service.Change($null,$null,$null,$null,$null,$false,$LogonAs,$Password)
 }
 
 
