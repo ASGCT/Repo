@@ -1,12 +1,16 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Sets the logon as value for a service
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Sets the logon as value for a specified service if desired, 
+  Resets all services using that logon credential if no service is specified.
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER LogonAs
+  The username to use for the logon as 
+
+  .PARAMETER Password
+  A Secure string password for the user you are configuring to login as.
 
   .INPUTS
   InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
@@ -50,13 +54,19 @@ If (!($bootstraploaded)){
 $snames = @()
 $failurecount = 0
 If(!($ServiceNames)){
-  $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$LogonAs'"
+  $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$($LogonAs.replace('\','\\'))'"
 } else {
   Foreach ($Name in $ServiceNames){
   $sNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "Name = '$ServiceNames'"
   }
 }
 Write-log -message 'WARNING - We are about to change service credentials.' -type log
+
+if (!($snames)) {
+  Write-log -message "No services were found using $LogonAs for credential validation" -type Log
+  Write-NewEventlog -EventID 7002 -EntryType 'Error' -Message "$LogonAS credentials could not found on any service, please verify you are inputting the proper login name with domain using $($MyInvocation.ScriptName)"
+  throw "No services were found using $LogonAs for credential validation"
+}
 
 foreach ($service in $SNames) {
   Write-log -message "Modifying $($service.name)'s credentials"
@@ -70,6 +80,8 @@ foreach ($service in $SNames) {
     Write-NewEventlog -EventID 7010 -EntryType 'Information' -Message "$Service Credentials were changed successfully by $($MyInvocation.ScriptName) "
   }
 }
+
+
 
 if ($failurecount -gt 0) {
   Throw "$($MyInvocation.ScriptName) failed to reset the credentials on $failurecount services. `rPlease review the eventlogs for an event id of 7002 for service names. `rService names can also be found in the scripts log file."
