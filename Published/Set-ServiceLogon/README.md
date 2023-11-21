@@ -1,28 +1,29 @@
-# Execute-RepoScript
+# Set-ServiceLogon
 
-Downloads and executes a repo script.
+  Sets the logon as value for a specified service if desired, 
+  Resets all services using that logon credential if no service is specified.
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Set-ServiceLogon.ps1 [-LogonAs] <String> [-Password] <SecureString> [-ServiceNames] <StringArray> [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Sets the logon as value for a service
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Set-ServiceLogon.ps1 -LogonAs 'WAD\tech.support' -Password [Secure.String]
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+Checks for all services where the logonas name is set to 'WAD\tech.support' and sets the credentials to the new password.
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+Set-ServiceLogon.ps1 -LogonAs 'WAD\tech.support' -Password [Secure.String] -ServiceNames 'testservice','testservice1'
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Sets 'testservice' and 'testservice1' logon credentials to the logonas name and password.
