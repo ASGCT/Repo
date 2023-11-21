@@ -48,7 +48,7 @@ If (!($bootstraploaded)){
 
 }
 $snames = @()
-
+$failurecount = 0
 If(!($ServiceNames)){
   $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$LogonAs'"
 } else {
@@ -60,7 +60,25 @@ Write-log -message 'WARNING - We are about to change service credentials.' -type
 
 foreach ($service in $SNames) {
   Write-log -message "Modifying $($service.name)'s credentials"
-  $service.Change($null,$null,$null,$null,$null,$false,$LogonAs,$Password)
+  $result = $service.Change($null,$null,$null,$null,$null,$false,$LogonAs,$Password)
+  if ($result.ReturnValue -ne 0) {
+    write-log -message "$service credentials could not be adjusted, please verify you are inputting the proper login name with domain" -type ERROR
+    Write-NewEventlog -EventID 7002 -EntryType 'Error' -Message "$service credentials could not be adjusted, please verify you are inputting the proper login name with domain using $($MyInvocation.ScriptName)"
+    $failurecount += 1
+  } else {
+    Write-log -message "$Service Credentials were changed successfully"
+    Write-NewEventlog -EventID 7010 -EntryType 'Information' -Message "$Service Credentials were changed successfully by $($MyInvocation.ScriptName) "
+  }
+}
+
+if ($failurecount -gt 0) {
+  Throw "$($MyInvocation.ScriptName) failed to reset the credentials on $failurecount services. `rPlease review the eventlogs for an event id of 7002 for service names. `rService names can also be found in the scripts log file."
+} else {
+  if (!($ServiceNames)) {
+  Return "$($MyInvocation.ScriptName) found and successfully reset the credentials for all services using the login name of $LogonAs"
+  } else {
+    Return "$($MyInvocation.ScriptName) found and successfully reset the credentials for $serviceNames"
+  }
 }
 
 
