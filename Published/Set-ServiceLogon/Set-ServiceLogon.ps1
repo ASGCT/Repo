@@ -12,12 +12,12 @@
   .PARAMETER Password
   A Secure string password for the user you are configuring to login as.
 
-  .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  .PARAMETER ServiceNames
+  A string array of targetted services to set the desired crentials upon. 
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\Script-Logs\Set-ServiceLogon.log  
 
   .EXAMPLE
   PS> .\Uninstall-Screenconnect.ps1 
@@ -65,6 +65,7 @@ Write-log -message 'WARNING - We are about to change service credentials.' -type
 if (!($snames)) {
   Write-log -message "No services were found using $LogonAs for credential validation" -type Log
   Write-NewEventlog -EventID 7002 -EntryType 'Error' -Message "$LogonAS credentials could not found on any service, please verify you are inputting the proper login name with domain using $($MyInvocation.ScriptName)"
+  clear-files
   throw "No services were found using $LogonAs for credential validation"
 }
 
@@ -84,11 +85,14 @@ foreach ($service in $SNames) {
 
 
 if ($failurecount -gt 0) {
+  Clear-Files
   Throw "$($MyInvocation.ScriptName) failed to reset the credentials on $failurecount services. `rPlease review the eventlogs for an event id of 7002 for service names. `rService names can also be found in the scripts log file."
 } else {
   if (!($ServiceNames)) {
-  Return "$($MyInvocation.ScriptName) found and successfully reset the credentials for all services using the login name of $LogonAs"
+    Clear-Files
+    Return "$($MyInvocation.ScriptName) found and successfully reset the credentials for all services using the login name of $LogonAs"
   } else {
+    Clear-Files
     Return "$($MyInvocation.ScriptName) found and successfully reset the credentials for $serviceNames"
   }
 }
