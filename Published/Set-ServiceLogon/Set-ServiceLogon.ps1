@@ -50,7 +50,7 @@ If (!($bootstraploaded)){
 $snames = @()
 $failurecount = 0
 If(!($ServiceNames)){
-  $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$LogonAs'"
+  $SNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "StartName = '$($LogonAs.Replace('.\',''))'"
 } else {
   Foreach ($Name in $ServiceNames){
   $sNames += get-wmiobject -namespace "root\cimv2" -Class Win32_Service -Filter "Name = '$ServiceNames'"
