@@ -86,7 +86,7 @@ Foreach ($log in $logs) {
   $filename = "$($(Get-Date).ToString('yyyyMMdd'))-$log.csv"
   Get-EventLog $Log | Tee-Object -Variable logdata
   Write-log -message "Clearing log: $Log"
-  Clear-EventLog -logname $log -confirm
+  Clear-EventLog -logname $log -confirm:$False
   Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Cleared $log Successfully"
   if ($Archive) {
     Write-log -message "Archiving log: $log to $Logfilelocation\\$filename"
@@ -105,3 +105,4 @@ Foreach ($log in $logs) {
 }
 
 Clear-Files
+Return 'Completed'
