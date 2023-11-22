@@ -84,7 +84,7 @@ If (!(Test-Path $Logfilelocation)) {
 Foreach ($log in $logs) {
   Write-log -message "Retrieving log: $Log"
   $filename = "$($(Get-Date).ToString('yyyyMMdd'))-$log.csv"
-  Get-EventLog $Log | Tee-Object -Variable logdata
+  try {Get-EventLog $Log | Tee-Object -Variable logdata } catch {Continue}
   Write-log -message "Clearing log: $Log"
   Clear-EventLog -logname $log -confirm:$False
   Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Cleared $log Successfully"
