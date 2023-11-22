@@ -96,12 +96,18 @@ if ($users -eq 'All') {
   #disconnect all sessions
   $MyActiveSessions | ForEach-Object {Write-Log -Message "Logging off Session: $($_ | Out-String)";logoff.exe $_.Id}
   Write-log -Message 'Verifying all users logged out'
-  If (quser -eq "No User exists for *") {
+  $VerifyActiveSessions = get-session
+  If ($VerifyActiveSessions -eq "No User exists for *") {
+    Write-NewEventlog -eventid 7010 -message "Disconnect-Session.ps1 Logged off all users Successfully"
     Write-Log -Message 'Success'
+    return 'Success'
   } else {
+    Write-NewEventlog -eventid 7004 -EntryType 'ERROR' -message "Disconnect-Session.ps1 Could not Logged off all Users"
     Write-Log -Message 'Failure' -Type ERROR
+    throw 'Failed'
   }
 } else {
+  $failurecount = 0
   Foreach ($User in $Users) {
     $TargetSession = $MyActiveSessions | Where-Object {$_.UserName -match "$User"}
     Write-log -Message "Logging off Session: `r$($TargetSession | Out-String)"
@@ -109,13 +115,20 @@ if ($users -eq 'All') {
     $verifySessions = get-session
     Write-log -Message "Verifying $User is logged out"
     if (!($verifySessions | Where-Object {$_.UserName -eq $user})) {
-      Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Logged off $User Successfully"
+      Write-NewEventlog -eventid 7010 -message "Disconnect-Session.ps1 Logged off $User Successfully"
       Write-log -Message 'Success'
     } else {
-      Write-NewEventlog -eventid 7004 -EntryType 'ERROR' -message "$($MyInvocation.ScriptName) Could not Logged off $User"
+      Write-NewEventlog -eventid 7004 -EntryType 'ERROR' -message "Disconnect-Session.ps1 Could not Logged off $User"
       Write-Log -Message 'Failure' -Type ERROR
+      $failurecount += 1
     }
 
   }
 } 
 Clear-Files
+if ($failurecount -gt 0) {
+  throw 'Error'
+} else {
+  Return 'Success'
+}
+
