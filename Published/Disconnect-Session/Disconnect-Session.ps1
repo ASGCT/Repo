@@ -97,6 +97,7 @@ if ($users -eq 'All') {
   $MyActiveSessions | ForEach-Object {Write-Log -Message "Logging off Session: $($_ | Out-String)";logoff.exe $_.Id}
   Write-log -Message 'Verifying all users logged out'
   $VerifyActiveSessions = get-session
+  Write-log -message "Verifyactivesessions = $VerifyActiveSessions"
   If ($VerifyActiveSessions -eq "No User exists for *") {
     Write-NewEventlog -eventid 7010 -message "Disconnect-Session.ps1 Logged off all users Successfully"
     Write-Log -Message 'Success'
