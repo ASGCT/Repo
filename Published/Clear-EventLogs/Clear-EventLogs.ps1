@@ -87,7 +87,7 @@ Foreach ($log in $logs) {
   try {Get-EventLog $Log | Tee-Object -Variable logdata } catch {Continue}
   Write-log -message "Clearing log: $Log"
   Clear-EventLog -logname $log -confirm:$False
-  Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Cleared $log Successfully"
+  Write-NewEventlog -eventid 7010 -message "Clear-EventLogs.ps1 Cleared $log Successfully"
   if ($Archive) {
     Write-log -message "Archiving log: $log to $Logfilelocation\\$filename"
     $logdata | Export-csv -Path "$Logfilelocation\\$filename"
