@@ -98,7 +98,7 @@ if ($users -eq 'All') {
   Write-log -Message 'Verifying all users logged out'
   $VerifyActiveSessions = get-session
   Write-log -message "Verifyactivesessions = $VerifyActiveSessions"
-  If ($VerifyActiveSessions -eq "No User exists for *") {
+  If (!($VerifyActiveSessions)) {
     Write-NewEventlog -eventid 7010 -message "Disconnect-Session.ps1 Logged off all users Successfully"
     Write-Log -Message 'Success'
     return 'Success'
