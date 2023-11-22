@@ -185,5 +185,5 @@ if ($versionMatchInfo.Matches.Groups -and $versionMatchInfo.Matches.Groups[1].Su
 ) | Out-File -FilePath $GpIni -Encoding ascii
 Get-GPO -Guid $GPOID
 Clear-Files
-Write-NewEventlog -eventid 7010 -message "$($MyInvocation.ScriptName) Completed Successfully"
+Write-NewEventlog -eventid 7010 -message "Initialize-DNSFilterServer.ps1 Completed Successfully"
 return
