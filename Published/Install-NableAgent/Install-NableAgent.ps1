@@ -45,7 +45,7 @@
 Param(
   # Parameter help description
   [Parameter(Mandatory=$true,Position = 0)]
-  [ValidatePattern ('N-Able.asgct.com')]
+  [ValidatePattern ('^N-Able.[a-z]{2,24}.com$')]
   $Server,
   [Parameter(Mandatory=$true, Position= 1)]
   [Int]
