@@ -1,4 +1,4 @@
-# Execute-RepoScript
+# Install-NableAgent
 
 Installs an N-able agent using a Server, Customer ID, and Token
 
