@@ -1,4 +1,4 @@
-# Initialize-NableDeployment
+# Initialize-NableDeploymentDC
 
   Sets up a domain controller to push out the n-able agent for this client.
   ** Does not apply the group policy to any OU **
