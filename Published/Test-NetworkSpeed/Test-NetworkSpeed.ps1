@@ -11,7 +11,7 @@
 
   .EXAMPLE
   PS> .\Test-NetworkSpeed.ps1 
-  Returns the results of Okaala's speedtest to the console and log file.
+  Returns the results of Ookala's speedtest to the console and log file.
 
   .NOTES
   This script was developed by
