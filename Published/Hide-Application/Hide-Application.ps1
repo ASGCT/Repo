@@ -65,4 +65,5 @@ If ((Get-ItemPropertyValue $PSPath -Name SystemComponent) -ne 1) {
 }
 
 Write-log "Confirmed $Name does have a system component of 1, Application should be hidden."
+Clear-Files
 return "Application $Name Successfully hidden."
