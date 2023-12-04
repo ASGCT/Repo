@@ -50,7 +50,12 @@ If (!($Pspath)) {
 }
 
 Write-Log -Message "Found $Name at $($PsPath.PSChildName) Applying registry key to hide installation."
+
+try{Get-ItemPropertyValue -Path $pspath -Name 'SystemComponent' | Out-Null
+Set-ItemProperty -Path $PSPath -Name 'SystemComponent' -Value 1 | Out-Null
+} catch {
 New-ItemProperty -Path $PSPath -Name 'SystemComponent' -Value 1 | Out-Null
+}
 
 Write-Log -Message 'Verifying hiding of application'
 
