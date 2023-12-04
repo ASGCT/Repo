@@ -51,6 +51,6 @@ If (Test-Path 'C:\temp\SPTest\Speedtest.exe'){
 }
 Write-log -message "Getting Speedtest Results."
 $TestResults = & C:\temp\SPTest\Speedtest.exe --accept-license
-Write-Log -Message $TestResults
+Write-Log -Message '$($TestResults | Out-String)'
 
 return $TestResults
