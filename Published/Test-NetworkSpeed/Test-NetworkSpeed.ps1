@@ -50,7 +50,7 @@ If (Test-Path 'C:\temp\SPTest\Speedtest.exe'){
   Expand-Archive -literalpath $DownloadLocation -DestinationPath 'C:\temp\SPTest'
 }
 Write-log -message "Getting Speedtest Results."
-$TestResults = & C:\temp\SPTest\Speedtest.exe --accept-license
+$TestResults = & C:\temp\SPTest\Speedtest.exe --accept-license | Out-string
 Write-Log -Message "$($TestResults | Out-String)"
 
 return $TestResults
