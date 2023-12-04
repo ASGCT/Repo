@@ -60,4 +60,5 @@ If ((Get-ItemPropertyValue $PSPath -Name SystemComponent) -ne 0) {
 }
 
 Write-log "Confirmed $Name does have a system component of 0, Application should be visible."
+Clear-Files
 return "Application $Name Successfully revealed."
