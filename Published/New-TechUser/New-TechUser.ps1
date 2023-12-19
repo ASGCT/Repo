@@ -107,7 +107,7 @@ if ($ApplySAM -eq 'Exists') {
   }
 }
 
-$sam = $ApplySAM
+
 if(!$UserExists) {
   Write-Log -message "Creating User $Sam"
   New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $OU -PasswordNeverExpires $true
