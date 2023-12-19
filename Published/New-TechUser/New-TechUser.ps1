@@ -66,7 +66,7 @@ Function Find-User {
     [Parameter(Mandatory=$true)][string]$SamAccountName
   )
   try {
-    Get-ADUser -identity $Sam -erroraction Stop
+    Get-ADUser -identity $Sam -erroraction Stop | Out-Null
     Return 'Exists'
   } catch {
     Return $SamAccountName
