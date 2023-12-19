@@ -67,7 +67,7 @@ Function Find-User {
   )
   try {
     Get-ADUser -identity $Sam -erroraction Stop
-    Return $false
+    Return 'Exists'
   } catch {
     Return $SamAccountName
   }
@@ -85,7 +85,7 @@ Write-log -message "User will be added to the following ou: $findlocation"
 
 $ApplySAM = Find-User -SamAccountName $Sam
 
-if (!$ApplySAM) {
+if ($ApplySAM -eq 'Exists') {
   Write-log -message "UserName $sam exists in the current structure, verifying persons"
   if ($(Get-ADUser -identity $Sam).GivenName -match "$firstName" -and $(Get-ADUser -identity $Sam).Surname -Match "$LastName") {
     Write-Log -message "$sam User confirmed to already exist in this context"
@@ -94,13 +94,15 @@ if (!$ApplySAM) {
     Write-log -message "A user with the username $sam exists, however the first and last names do not match, this is a new user"
     $sam = "$($firstname[0])$($FirstName[1])"+"$lastName"+"-ASG"
     Write-log -message "Checking the following UserName : $Sam"
-    $ApplySAM = Find-User -SamAccountName $Sam
-    if ($(Get-ADUser -identity $Sam).GivenName -match "$firstName" -and $(Get-ADUser -identity $Sam).Surname -Match "$LastName") {
-      Write-Log -message "$sam User confirmed to already exist in this context"
-      $UserExists = $true
-    } else {
-      Write-log -message "Can not create a unique Sam Account Name for $FirstName $LastName Multiple instances exist" -type ERROR
-      Throw "Can not create a unique Sam Account Name for $FirstName $LastName Multiple instances exist"
+    $NextApplySAM = Find-User -SamAccountName $Sam
+    if ($NextApplySAM -eq 'Exists') {
+      if ($(Get-ADUser -identity $Sam).GivenName -match "$firstName" -and $(Get-ADUser -identity $Sam).Surname -Match "$LastName") {
+        Write-Log -message "$sam User confirmed to already exist in this context"
+        $UserExists = $true
+      } else {
+        Write-log -message "Can not create a unique Sam Account Name for $FirstName $LastName Multiple instances exist" -type ERROR
+        Throw "Can not create a unique Sam Account Name for $FirstName $LastName Multiple instances exist"
+      }
     }
   }
 }
