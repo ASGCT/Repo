@@ -80,7 +80,7 @@ Write-log -message "Creating user $displayname on the following Domain: $domain"
 $Sam = "$($firstname[0])"+"$lastName"+"-ASG"
 Write-log -message "Users login name will be $sam"
 
-$findlocation = (((get-aduser -filter * | Where-object -Property SamaccountName -like '*-ASG' | Select-Object -First 1).DistinguishedName)-split "," | Select-Object -Skip 1)-join','
+$OU = (((get-aduser -filter * | Where-object -Property SamaccountName -like '*-ASG' | Select-Object -First 1).DistinguishedName)-split "," | Select-Object -Skip 1)-join','
 Write-log -message "User will be added to the following ou: $findlocation"
 
 $ApplySAM = Find-User -SamAccountName $Sam
@@ -110,7 +110,7 @@ if ($ApplySAM -eq 'Exists') {
 
 if(!$UserExists) {
   Write-Log -message "Creating User $Sam"
-  New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $findlocation -PasswordNeverExpires $true
+  New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $OU -PasswordNeverExpires $true
   $SAM | ForEach-Object { 
     # construct the UserPrincipalName
     $upn = "{0}@{1}" -f $_, $Domain
