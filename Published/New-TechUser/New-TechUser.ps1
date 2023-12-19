@@ -94,8 +94,8 @@ if ($ApplySAM -eq 'Exists') {
     Write-log -message "A user with the username $sam exists, however the first and last names do not match, this is a new user"
     $sam = "$($firstname[0])$($FirstName[1])"+"$lastName"+"-ASG"
     Write-log -message "Checking the following UserName : $Sam"
-    $NextApplySAM = Find-User -SamAccountName $Sam
-    if ($NextApplySAM -eq 'Exists') {
+    $ApplySAM = Find-User -SamAccountName $Sam
+    if ($ApplySAM -eq 'Exists') {
       if ($(Get-ADUser -identity $Sam).GivenName -match "$firstName" -and $(Get-ADUser -identity $Sam).Surname -Match "$LastName") {
         Write-Log -message "$sam User confirmed to already exist in this context"
         $UserExists = $true
@@ -106,14 +106,16 @@ if ($ApplySAM -eq 'Exists') {
     }
   }
 }
+
+$sam = $ApplySAM
 if(!$UserExists) {
-  Write-Log -message "Creating User $ApplySam"
-  New-ADUSER -Name $Displayname -SamAccountName $ApplySAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $OU -PasswordNeverExpires $true
-  $ApplySAM | ForEach-Object { 
+  Write-Log -message "Creating User $Sam"
+  New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $OU -PasswordNeverExpires $true
+  $SAM | ForEach-Object { 
     # construct the UserPrincipalName
     $upn = "{0}@{1}" -f $_, $Domain
     Write-Log -Message "UPN to be set to: $UPN"
-    Get-ADUser $ApplySAM | Set-ADUser -UserPrincipalName $upn
+    Get-ADUser $SAM | Set-ADUser -UserPrincipalName $upn
     }
 }
 
@@ -121,7 +123,7 @@ Write-Log -Message "User exists or has been created, obtaining groups"
 $groups = $(get-adgroup -filter "Name -like 'Domain Admin*'" | Select-Object -expandproperty Name), $(get-adgroup -filter "Name -like 'Duo*'" | Select-Object -expandproperty Name), $(get-adgroup -filter "Name -like 'VPN*'" | Select-Object -expandproperty Name)
 Write-Log -message "The Following Groups have been found: `r $groups"
 
-$groups | foreach-object { Add-ADPrincipalGroupMembership -Identity $ApplySAM -MemberOf $_ } -ErrorAction SilentlyContinue 
+$groups | foreach-object { Add-ADPrincipalGroupMembership -Identity $SAM -MemberOf $_ } -ErrorAction SilentlyContinue 
 
 Clear-Files
-Return "$applySAM Account Created Successfully"
+Return "$SAM Account Created Successfully"
