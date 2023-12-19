@@ -110,12 +110,12 @@ if ($ApplySAM -eq 'Exists') {
 
 if(!$UserExists) {
   Write-Log -message "Creating User $Sam"
-  New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $OU -PasswordNeverExpires $true
+  New-ADUSER -Name $Displayname -SamAccountName $SAM -GivenName $Firstname -Surname $Lastname -Description "ASG Support Team" -AccountPassword $Password -Enable $true -Path $findlocation -PasswordNeverExpires $true
   $SAM | ForEach-Object { 
     # construct the UserPrincipalName
     $upn = "{0}@{1}" -f $_, $Domain
     Write-Log -Message "UPN to be set to: $UPN"
-    Get-ADUser $SAM | Set-ADUser -UserPrincipalName $upn
+    Get-ADUser $SAM | Set-ADUser -UserPrincipalName $upn -erroraction SilentlyContinue
     }
 }
 
