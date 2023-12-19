@@ -116,7 +116,7 @@ if(!$UserExists) {
 }
 
 Write-Log -Message "User exists or has been created, obtaining groups"
-$groups = $(get-adgroup -filter "Name -like 'Duo*'" | Select-Object -expandproperty Name), $(get-adgroup -filter "Name -like 'VPN*'" | Select-Object -expandproperty Name)
+$groups = $(get-adgroup -filter "Name -like 'Domain Admin*'" | Select-Object -expandproperty Name), $(get-adgroup -filter "Name -like 'Duo*'" | Select-Object -expandproperty Name), $(get-adgroup -filter "Name -like 'VPN*'" | Select-Object -expandproperty Name)
 Write-Log -message "The Following Groups have been found: `r $groups"
 
 $groups | foreach-object { Add-ADPrincipalGroupMembership -Identity $ApplySAM -MemberOf $_ } -ErrorAction SilentlyContinue 
