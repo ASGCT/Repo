@@ -62,9 +62,13 @@ foreach ($User in $UserName){
   Write-Log -message "Removing User: $User"
   Remove-ADUser -Identity $User -Confirm:$false
   Write-Log -message "Verifying Removal of User: $User"
-  if (!(Get-ADUser -Identity $User)){
+  try {
+    Get-ADUser -Identity $User
+    Write-log -message "$User is still found in active directory -could not verify removal" -type ERROR
+  } catch {
     Write-Log -Message "$User Successfully Removed"
   }
+  
 }
 Clear-Files
 Return 'Remove-TechUser has successfully Completed.'
