@@ -48,22 +48,22 @@ If (!($bootstraploaded)){
 }
 
 foreach ($User in $UserName){
-  if ($UserName -notlike '*-ASG') {
-    Write-Log -message "User : $UserName is not an ASG account Will not remove account."
+  if ($User -notlike '*-ASG') {
+    Write-Log -message "User : $User is not an ASG account Will not remove account."
     Continue
   }
-  Write-Log -Message "Finding user : $UserName"
+  Write-Log -Message "Finding user : $User"
 
-  if (!(Get-ADUser -Identity $UserName)){
-    Write-Log -Message "Search for $UserName resulted in no known user" 
+  if (!(Get-ADUser -Identity $User)){
+    Write-Log -Message "Search for $User resulted in no known user" 
     Continue
   }
-  Write-Log -message "Successfully Found User: $UserName"
-  Write-Log -message "Removing User: $UserName"
-  Remove-ADUser -Identity $UserName -Confirm:$false
-  Write-Log -message "Verifying Removal of User: $UserName"
-  if (!(Get-ADUser -Identity $UserName)){
-    Write-Log -Message "$UserName Successfully Removed"
+  Write-Log -message "Successfully Found User: $User"
+  Write-Log -message "Removing User: $User"
+  Remove-ADUser -Identity $User -Confirm:$false
+  Write-Log -message "Verifying Removal of User: $User"
+  if (!(Get-ADUser -Identity $User)){
+    Write-Log -Message "$User Successfully Removed"
   }
 }
 Clear-Files
