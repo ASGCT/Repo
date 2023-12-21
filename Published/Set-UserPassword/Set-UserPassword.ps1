@@ -1,33 +1,56 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Set a users password, reset the account lockout state, optionally set the password to never expire, and optionally sync to o365
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Set-UserPassword.ps1 will determine a user's existance, then set that user's password to the requested password, it will optionally set that password
+  to never expire, optionally unlock a locked account, and optionally sync to Office365
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
+  .PARAMETER UserName
+  The Name of the target user
+
+  .PARAMETER Password
+  The password to set on that target user
+
+  .PARAMETER NeverExpire
+  Toggles the password to never expire
+  
+  .PARAMETER Unlock
+  Unlocks the user's account if locked
+  
+  .PARAMETER Sync
+  Is a final step of this script and syncs ad objects with a delta sync to Office 365. 
 
   .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
+  Necessary parameters
+    UserName
+    Password   
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\Script-Logs\Set-UserPassword.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
+  PS> .\Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] 
+  Simply sets ccalverley-asg's account password to the password provided.
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock
+  Sets ccalverley-asg's account password to the provided password and unlocks the account.
+
+  .EXAMPLE
+  PS> .\Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock -NeverExpire
+  Sets ccalverley-asg's account password to the provided password, unlocks the account, and sets the password to never expire.
+
+  .EXAMPLE
+  PS> .\Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock -NeverExpire -Sync
+  Sets ccalverley-asg's account password to the provided password, unlocks the account, sets the password to never expire, finally Syncing ad with Office 365.
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  December 21, 2023
   For
   ASGCT
 #>

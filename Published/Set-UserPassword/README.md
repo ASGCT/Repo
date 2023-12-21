@@ -1,28 +1,43 @@
-# Execute-RepoScript
+# Set-UserPassword
 
-Downloads and executes a repo script.
+  Set-UserPassword.ps1 will determine a user's existance, then set that user's password to the requested password, it will optionally set that password
+  to never expire, optionally unlock a locked account, and optionally sync to Office365
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Set-UserPassword.ps1 [-UserName] <String> [-Password] <SecureString> [-NeverExpire] [-Unlock] [-Sync] [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Set a users password, reset the account lockout state, optionally set the password to never expire, and optionally sync to o365
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] 
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
+  Simply sets ccalverley-asg's account password to the password provided.
 
 ###  Example 2 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
+Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock
 ```
 
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+  Sets ccalverley-asg's account password to the provided password and unlocks the account.
+
+###  Example 3 
+```PowerShell
+Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock -NeverExpire
+```
+
+ Sets ccalverley-asg's account password to the provided password, unlocks the account, and sets the password to never expire.
+
+###  Example 4 
+```PowerShell
+Set-UserPassword.ps1 -UserName 'CCalverley-asg' -Password [SecureString] -Unlock -NeverExpire -Sync
+```
+
+  Sets ccalverley-asg's account password to the provided password, unlocks the account, sets the password to never expire, finally Syncing ad with Office 365.    
