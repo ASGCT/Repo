@@ -1,33 +1,23 @@
 <#
   .SYNOPSIS
-  Uninstalls All ConnectWise Control instances
+  Determine any Rogue DHCP Servers in the environment
 
   .DESCRIPTION
-  The Uninstall-ScreenConnect.ps1 script removes ConnectWise Control instances from target machine.
+  Get-RogueDHCP.ps1 returns Healthy or all found Rogue DHCP Servers as an errored State.
   
-  .PARAMETER organizationKey
-  Specifies the organization key assigned by skykick when you activate a migration job.
-
-  .INPUTS
-  InstanceID (Which can be found in the software list contained in the ()'s for the instance)  
-
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\Script-Logs\Get-RogueDHCP.log  
 
   .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 
-  Removes all installed instances of Screenconnect Client from target machine.
-
-  .EXAMPLE
-  PS> .\Uninstall-Screenconnect.ps1 -InstanceID g4539gjdsfoir
-  Only removes ScreenConnect Client (g4539gjdsfoir) from the target machine.
+  PS> .\Get-RogueDHCP.ps1 
+  Searches and returns any Rogue DHCP Servers found
 
   .NOTES
   This script was developed by
   Chris Calverley 
   on
-  September 07, 2023
+  December 26, 2023
   For
   ASGCT
 #>
@@ -50,22 +40,32 @@ $DownloadURL = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/Get-
 $DownloadLocation = ".\DHCPTest"
 
 If (!(Test-Path $DownloadLocation)){
+  Write-Log -Message 'Creating folder'
   new-item $DownloadLocation -ItemType Directory -force
 }
+
 If (!(Test-Path "$DownloadLocation\DHCPTest.exe")) {
+  Write-Log -Message 'Downloading file'
   Invoke-WebRequest -UseBasicParsing -Uri $DownloadURL -OutFile "$($DownloadLocation)\DHCPTest.exe"
 }
 
 $Tests = 0
 $ListedDHCPServers = do {
+    Write-Log -Message "Starting test $Tests"
     & "$DownloadLocation\DHCPTest.exe" --quiet --query --print-only 54 --wait --timeout 3
     $Tests ++
 } while ($Tests -lt 2)
 
+Write-Host -Message "Found Listed Servers `r $ListedDHCPServers"
+
 $DHCPHealth = foreach ($ListedServer in $ListedDHCPServers) {
   if ($ListedServer -notin $AllowedDHCPServer) { "Rogue DHCP Server found. IP of rogue server is $ListedServer" }
 }
-
-if (!$DHCPHealth) { $DHCPHealth = "Healthy. No Rogue DHCP servers found." }
-
-Return $DHCPHealth -join "`r`n"
+Clear-Files
+if (!$DHCPHealth) { 
+  Write-Log -Message 'Healthy. No Rogue DHCP servers found.'
+  Return "Healthy. No Rogue DHCP servers found." 
+} else {
+  Write-Log -Message "$($DHCPHealth -join '`r`n')"
+  Throw "$($DHCPHealth -join '`r`n')"
+}
