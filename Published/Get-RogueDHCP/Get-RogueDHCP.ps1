@@ -60,7 +60,7 @@ $ListedDHCPServers = do {
     $Tests ++
 } while ($Tests -lt 2)
 
-Write-Host -Message "Found Listed Servers `r $ListedDHCPServers"
+Write-Log -Message "Found Listed Servers `r $ListedDHCPServers"
 
 $DHCPHealth = foreach ($ListedServer in $ListedDHCPServers) {
   if ($ListedServer -notin $AllowedDHCPServer) { "Rogue DHCP Server found. IP of rogue server is $ListedServer" }
