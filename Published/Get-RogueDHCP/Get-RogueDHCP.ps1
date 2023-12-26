@@ -39,6 +39,7 @@ If (!($bootstraploaded)){
 $AllowedDHCPServer = (Get-NetIPConfiguration | Where-Object { $_.InterfaceAlias -notmatch 'Loopback'} | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.status -ne "Disconnected"}).IPv4Address.IPAddress
 
 $AllowedDHCPServer += $Exclude
+Write-Log -message "Excluded Ip Addresses: `r $AllowedDHCPServer"
 
 $DownloadURL = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/Get-RogueDHCP/DHCPTest.exe"
 $DownloadLocation = ".\DHCPTest"
