@@ -1,28 +1,21 @@
-# Execute-RepoScript
+# Get-RogueDHCP
 
-Downloads and executes a repo script.
+Get-RogueDHCP.ps1 returns Healthy or all found Rogue DHCP Servers as an errored State.
 
 ## Syntax
 ```PowerShell
-Execute-RepoScript.ps1 [-FileName] <String> [-arguments] <String> [<CommonParameters>]
+Get-RogueDHCP.ps1 [<CommonParameters>]
 ```
 ## Description
 
-Downloads and executes a repo script.
+Determine any Rogue DHCP Servers in the environment
 
 ## Examples
 
 
 ###  Example 1 
 ```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-DNSFilter'
+Get-RogueDHCP.ps1
 ```
 
-Grabs the Install-DNSFilter.ps1 file from the repo and executes it on a target machine.
-
-###  Example 2 
-```PowerShell
-Execute-RepoScript.ps1 -FileName 'Install-SkykickOutlookAssistant' -arguments -organizationKey iouerdjgfo987845t=
-```
-
-Grabs the Install-SkykickOutlookAssistant.ps1 file from the repo and executes it on a target machine using the organization key iouerdjgfo987845t=
+Searches and returns any Rogue DHCP Servers found
