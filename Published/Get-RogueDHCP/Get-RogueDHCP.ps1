@@ -35,7 +35,7 @@ If (!($bootstraploaded)){
     Invoke-Command -ScriptBlock $scriptblock
 
 }
-
+$AllowedDHCPServer = @()
 $AllowedDHCPServer = (Get-NetIPConfiguration | Where-Object { $_.InterfaceAlias -notmatch 'Loopback'} | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.status -ne "Disconnected"}).IPv4Address.IPAddress
 
 $AllowedDHCPServer += $Exclude
