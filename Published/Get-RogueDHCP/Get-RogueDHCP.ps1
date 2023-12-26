@@ -23,7 +23,9 @@
 #>
 
 [CmdletBinding()]
-Param()
+Param(
+  [Parameter(Mandatory=$False)][String[]]$Exclude
+)
 
 If (!($bootstraploaded)){
     Set-ExecutionPolicy Bypass -scope Process -Force
@@ -34,7 +36,9 @@ If (!($bootstraploaded)){
 
 }
 
-$AllowedDHCPServer = (Get-NetIPConfiguration | where { $_.InterfaceAlias -notmatch 'Loopback'} | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.status -ne "Disconnected"}).IPv4Address.IPAddress
+$AllowedDHCPServer = (Get-NetIPConfiguration | Where-Object { $_.InterfaceAlias -notmatch 'Loopback'} | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.status -ne "Disconnected"}).IPv4Address.IPAddress
+
+$AllowedDHCPServer += $Exclude
 
 $DownloadURL = "https://raw.githubusercontent.com/ASGCT/Repo/main/Published/Get-RogueDHCP/DHCPTest.exe"
 $DownloadLocation = ".\DHCPTest"
