@@ -55,3 +55,17 @@ If (!(Test-Path $DownloadLocation)){
 If (!(Test-Path "$DownloadLocation\DHCPTest.exe")) {
   Invoke-WebRequest -UseBasicParsing -Uri $DownloadURL -OutFile "$($DownloadLocation)\DHCPTest.exe"
 }
+
+$Tests = 0
+$ListedDHCPServers = do {
+    & "$DownloadLocation\DHCPTest.exe" --quiet --query --print-only 54 --wait --timeout 3
+    $Tests ++
+} while ($Tests -lt 2)
+
+$DHCPHealth = foreach ($ListedServer in $ListedDHCPServers) {
+  if ($ListedServer -notin $AllowedDHCPServer) { "Rogue DHCP Server found. IP of rogue server is $ListedServer" }
+}
+
+if (!$DHCPHealth) { $DHCPHealth = "Healthy. No Rogue DHCP servers found." }
+
+Return $DHCPHealth -join "`r`n"
