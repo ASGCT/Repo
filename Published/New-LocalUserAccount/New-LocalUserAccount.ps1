@@ -102,11 +102,14 @@ if ($UserMayNotChangePassword) {
     UserMayNotChangePassword = $True
   }
 }
+
 $MultiGroupReturn = $False
 $GroupReturns = @()
-Write-output $params
+
 $User = New-LocalUser @params
-Foreach ($group in $groups) {
+
+Write-output $Groups
+Foreach ($group in $Groups) {
   if ($(Get-LocalGroup | Where-Object -Property Name -like "$group*").count -gt 1) {
     Write-log -message "More than 1 group exists with name $group, You must be more specific"
     $MultiGroupReturn = $True
