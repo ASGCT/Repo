@@ -114,7 +114,7 @@ Foreach ($group in $groups) {
   } else {
     Write-log -message "Adding $($User.Name) to $(Get-LocalGroup | Where-Object -Property Name -like $group*)"
     Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like $group*) -Member $User
-    $GroupReturns += $(Get-LocalGroup | Where-Object -Property Name -like $group*)
+    $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
   }
 }
 Write-Log -message "Verification starting"
