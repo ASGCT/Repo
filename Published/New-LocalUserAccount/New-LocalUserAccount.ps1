@@ -108,7 +108,7 @@ $GroupReturns = @()
 
 $User = New-LocalUser @params
 
-Write-output $Groups
+Write-output $Groups.Count
 Foreach ($group in $Groups) {
   if ($(Get-LocalGroup | Where-Object -Property Name -like "$group*").count -gt 1) {
     Write-log -message "More than 1 group exists with name $group, You must be more specific"
