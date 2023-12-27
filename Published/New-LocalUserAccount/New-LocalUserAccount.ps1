@@ -108,8 +108,8 @@ $GroupReturns = @()
 
 $User = New-LocalUser @params
 
-Write-output $Groups.Count
-Foreach ($group in $Groups) {
+
+Foreach ($group in $Groups.Split(',')) {
   if ($(Get-LocalGroup | Where-Object -Property Name -like "$group*").count -gt 1) {
     Write-log -message "More than 1 group exists with name $group, You must be more specific"
     $MultiGroupReturn = $True
