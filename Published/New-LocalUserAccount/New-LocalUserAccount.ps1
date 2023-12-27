@@ -112,7 +112,7 @@ Foreach ($group in $groups) {
     $MultiGroupRV += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
     Continue
   } else {
-    Write-log -message "Adding $($User.Name) to $(Get-LocalGroup | Where-Object -Property Name -like $group*)"
+    Write-log -message "Adding $($User.Name) to $($(Get-LocalGroup | Where-Object -Property Name -like $group*).Name)"
     Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like $group*) -Member $User
     $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
   }
@@ -132,7 +132,7 @@ If ($MultiGroupReturn) {
 Foreach ($gp in $GroupReturns) {
   if(!(Get-LocalGroupMember -Group $gp | Where-Object -Property Name -like "*$username")) {
     Write-Log -Message "Verification Failed - Could not find group member $UserName in Group $Gp" -Type ERROR
-    Throw "Verification Failed - Could not find group member $UserName in Group $Gp"
+    Throw "Verification Failed - Could not find group member $UserName in Group $($(Get-LocalGroup | Where-Object -Property Name -like $gp*).Name)"
   }
 }
 Write-Log -message 'All Verification tests Passed'
