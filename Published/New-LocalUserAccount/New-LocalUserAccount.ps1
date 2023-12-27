@@ -106,19 +106,19 @@ $MultiGroupReturn = $False
 $GroupReturns = @()
 $User = New-LocalUser @params
 Foreach ($group in $groups) {
-  if ($(Get-LocalGroup | Where-Object -Property Name -like $group*).count -gt 1) {
+  if ($(Get-LocalGroup | Where-Object -Property Name -like "$group*").count -gt 1) {
     Write-log -message "More than 1 group exists with name $group, You must be more specific"
     $MultiGroupReturn = $True
     $MultiGroupRV += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
     Continue
   } else {
-    Write-log -message "Adding $($User.Name) to $($(Get-LocalGroup | Where-Object -Property Name -like $group*).Name)"
-    Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like $group*) -Member $User
-    $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
+    Write-log -message "Adding $($User.Name) to $($(Get-LocalGroup | Where-Object -Property Name -like "$group*").Name)"
+    Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like "$group*") -Member $User
+    $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like "$group*")"
   }
 }
 Write-Log -message "Verification starting"
-
+Write-log -message "groupreturns = `r $Groupreturns"
 if (!(Get-LocalUser | Where-Object -Property Name -like $UserName)) {
   Write-Log -message "Verification Failed - Cannot find user $UserName" -Type ERROR
   Throw "Verification Failed - Cannot find user $UserName"
@@ -132,7 +132,7 @@ If ($MultiGroupReturn) {
 Foreach ($gp in $GroupReturns) {
   if(!(Get-LocalGroupMember -Group $gp | Where-Object -Property Name -like "*$username")) {
     Write-Log -Message "Verification Failed - Could not find group member $UserName in Group $Gp" -Type ERROR
-    Throw "Verification Failed - Could not find group member $UserName in Group $($(Get-LocalGroup | Where-Object -Property Name -like $gp*).Name)"
+    Throw "Verification Failed - Could not find group member $UserName in Group $gp)"
   }
 }
 Write-Log -message 'All Verification tests Passed'
