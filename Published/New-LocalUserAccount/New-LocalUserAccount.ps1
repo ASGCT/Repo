@@ -104,6 +104,7 @@ if ($UserMayNotChangePassword) {
 }
 $MultiGroupReturn = $False
 $GroupReturns = @()
+Write-output $params
 $User = New-LocalUser @params
 Foreach ($group in $groups) {
   if ($(Get-LocalGroup | Where-Object -Property Name -like "$group*").count -gt 1) {
@@ -112,9 +113,9 @@ Foreach ($group in $groups) {
     $MultiGroupRV += "$(Get-LocalGroup | Where-Object -Property Name -like $group*)"
     Continue
   } else {
-    Write-log -message "Adding $($User.Name) to $($(Get-LocalGroup | Where-Object -Property Name -like "$group*").Name)"
-    Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like "$group*") -Member $User
-    $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like "$group*")"
+    Write-log -message "Adding $($User.Name) to $($(Get-LocalGroup | Where-Object -Property Name -like `"$group*`").Name)"
+    Add-LocalGroupMember -group $(Get-LocalGroup | Where-Object -Property Name -like `"$group*`") -Member $User
+    $GroupReturns += "$(Get-LocalGroup | Where-Object -Property Name -like `"$group*`")"
   }
 }
 Write-Log -message "Verification starting"
