@@ -125,19 +125,23 @@ Write-Log -message "Verification starting"
 Write-log -message "groupreturns = `r $Groupreturns"
 if (!(Get-LocalUser | Where-Object -Property Name -like $UserName)) {
   Write-Log -message "Verification Failed - Cannot find user $UserName" -Type ERROR
+  Clear-Files
   Throw "Verification Failed - Cannot find user $UserName"
 } 
 
 If ($MultiGroupReturn) {
   Write-Log -message "Verification Failed - Duplicate groups exist with the same matching pattern `r $MultigroupRV" -Type ERROR
+  Clear-Files
   throw "Verification Failed - Duplicate groups exist with the same matching pattern `r $MultigroupRV"
 } 
 
 Foreach ($gp in $GroupReturns) {
   if(!(Get-LocalGroupMember -Group $gp | Where-Object -Property Name -like "*$username")) {
     Write-Log -Message "Verification Failed - Could not find group member $UserName in Group $Gp" -Type ERROR
+    Clear-Files
     Throw "Verification Failed - Could not find group member $UserName in Group $gp"
   }
 }
 Write-Log -message 'All Verification tests Passed'
+Clear-Files
 Return 'All Verification tests Passed'
