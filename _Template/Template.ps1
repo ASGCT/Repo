@@ -13,7 +13,7 @@
 
   .OUTPUTS
   System.String
-  C:\Temp\Uninstall-Screenconnect.log  
+  C:\ProgramData\ASG\Script-Logs\Uninstall-Screenconnect.log  
 
   .EXAMPLE
   PS> .\Uninstall-Screenconnect.ps1 
