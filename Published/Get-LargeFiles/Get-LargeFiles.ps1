@@ -62,6 +62,6 @@ $BigFiles += Foreach ($file in $LargeFiles) {
   }
 
 }
-Write-Log -message "Found the following Large Files: `r $($BigFiles | Out-String)"
+Write-Log -message "Found the following Large Files: `r $($BigFiles.file | Out-String)`r Sizes in GB respectfully:`r$($BigFiles.SizeGB | Out-String)"
 Clear-Files
-Return "Found the following Large Files: `r $($BigFiles | Out-String)"
+Return "Found the following Large Files: `r $($BigFiles.file | Out-String)`r Sizes in GB respectfully:`r$($BigFiles.SizeGB | Out-String)"
